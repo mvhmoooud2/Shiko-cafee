@@ -11,6 +11,6 @@
    ⚠️ عمرك ما تحط هنا الـ secret key أو service_role — دول للسيرفر بس.
    ===================================================================== */
 window.SHIKO_CONFIG = {
-  SUPABASE_URL: "PASTE_YOUR_SUPABASE_URL_HERE",
-  SUPABASE_KEY: "PASTE_YOUR_PUBLISHABLE_KEY_HERE",
+  SUPABASE_URL: "https://cbdzfawqxunpnyacdlcr.supabase.co",
+  SUPABASE_KEY: "sb_publishable_vk7jLZh110IKOLdQ1DEcRg_WnbskktC",
 };

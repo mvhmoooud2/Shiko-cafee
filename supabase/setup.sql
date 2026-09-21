@@ -19,7 +19,7 @@ create table if not exists public.admins (
 );
 
 -- ✏️ غيّر الإيميل ده لإيميل العميل (نفس الإيميل اللي هتعمله من Authentication → Users)
-insert into public.admins (email) values ('client@example.com')
+insert into public.admins (email) values ('mahmoudmohamedd91@gmail.com')
 on conflict (email) do nothing;
 
 -- محدش يقدر يقرأ جدول الأدمنز مباشرة (بيتقرأ بس من جوه دالة is_admin)
