@@ -144,7 +144,7 @@ create policy "admin delete menu images" on storage.objects for delete to authen
 -- 5) المنيو الحالي (بيتضاف بس لو الجداول فاضية)
 -- ---------------------------------------------------------------------
 insert into public.settings (shop_name, tagline, address, whatsapp, instagram1, instagram2, maps_url, logo_url)
-select ('قهوة شيكو', 'قهوتك على أصولها ☕', '٧ شارع الثورة - الكوربة - مصر الجديدة', '201035641725', 'amin.shiko11', 'shiko.coffee', 'https://www.google.com/maps/search/?api=1&query=%D9%A7%D9%84%D9%83%D9%88%D8%B1%D8%A8%D8%A9+%D8%B4%D8%A7%D8%B1%D8%B9+%D8%A7%D9%84%D8%AB%D9%88%D8%B1%D8%A9+%D9%A7+%D9%85%D8%B5%D8%B1+%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9', null)
+select 'قهوة شيكو', 'قهوتك على أصولها ☕', '٧ شارع الثورة - الكوربة - مصر الجديدة', '201035641725', 'amin.shiko11', 'shiko.coffee', 'https://www.google.com/maps/search/?api=1&query=%D9%A7%D9%84%D9%83%D9%88%D8%B1%D8%A8%D8%A9+%D8%B4%D8%A7%D8%B1%D8%B9+%D8%A7%D9%84%D8%AB%D9%88%D8%B1%D8%A9+%D9%A7+%D9%85%D8%B5%D8%B1+%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9', null
 where not exists (select 1 from public.settings);
 
 do $$
