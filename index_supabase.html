@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#1a110c" media="(prefers-color-scheme: dark)">
+<title>قهوة شيكو | القائمة</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Aref+Ruqaa:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --coffee: #3b2a20;
+    --coffee-dark: #241812;
+    --cream: #f5ead9;
+    --gold: #c8a165;
+    --accent: #a05c2c;
+    --brand: #983a5a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--cream);
+    color: var(--coffee-dark);
+    line-height: 1.7;
+  }
+
+.bg-logo {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: min(72vw, 520px);
+    opacity: .08;
+    filter: blur(7px);
+    pointer-events: none;
+  }
+
+  header, .nav, .menu-container, footer {
+    position: relative;
+    z-index: 1;
+  }
+
+.header-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  @media (min-width: 1024px) {
+    /* ===== نسخة اللاب توب ===== */
+    header { padding: 50px 40px 90px; }
+
+    .header-row {
+      flex-direction: row;
+      justify-content: center;
+      gap: 45px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header-text { align-items: flex-start; text-align: right; }
+
+    .logo-img { width: 190px; height: 190px; }
+
+    .brand-text { font-size: 76px; }
+
+    .tagline { font-size: 22px; }
+
+    .address-badge { font-size: 17px; }
+
+    .nav { gap: 10px; padding: 12px; }
+
+    .chip { font-size: 14px; padding: 6px 18px; }
+
+    .menu-container {
+      max-width: 1180px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 35px;
+      align-items: start;
+    }
+
+    .section { margin-top: 35px; }
+    .section:nth-child(-n+2) { margin-top: -30px; }
+
+    .bg-logo { background-size: 650px; opacity: .06; }
+
+    .item { padding: 16px 18px; }
+    .item-name { font-size: 19px; }
+  }
+
+  header {
+    background: linear-gradient(160deg, var(--coffee-dark) 0%, var(--coffee) 70%, #4a3428 100%);
+    color: var(--cream);
+    text-align: center;
+    padding: 60px 20px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: "";
+    position: absolute;
+    bottom: -40px; right: 0; left: 0;
+    height: 80px;
+    background: var(--cream);
+    border-radius: 50% 50% 0 0;
+  }
+
+  .logo { font-size: 56px; font-weight: 900; color: var(--gold); letter-spacing: 1px; }
+  .logo span { color: var(--cream); }
+.logo-img {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    object-fit: contain;
+    background: #fff;
+    border: 4px solid var(--gold);
+    box-shadow: 0 8px 25px rgba(0,0,0,.35);
+    margin-bottom: 10px;
+  }
+
+  .brand-text {
+    font-family: 'Aref Ruqaa', serif;
+    font-weight: 700;
+    font-size: 60px;
+    color: var(--brand);
+    text-shadow: 0 2px 8px rgba(0,0,0,.3);
+    line-height: 1.6;
+  }
+
+  .tagline { margin-top: 8px; font-size: 18px; color: #d8c8b0; }
+
+  .address-badge {
+    margin-top: 18px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cream);
+    background: rgba(200,161,101,.15);
+    border: 1px solid rgba(200,161,101,.5);
+    display: inline-block;
+    padding: 8px 22px;
+    border-radius: 30px;
+  }
+
+  .divider { width: 120px; height: 3px; background: var(--gold); margin: 20px auto 0; border-radius: 2px; }
+
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: transparent;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+  }
+
+  .chip {
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(255,255,255,.6);
+    color: var(--coffee);
+    border: 1.5px solid var(--gold);
+    border-radius: 30px;
+    padding: 3px 12px;
+    cursor: pointer;
+    transition: all .2s ease;
+  }
+
+  .chip:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.chip.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 3px 10px rgba(160,92,44,.35);
+  }
+
+  .menu-container {
+    max-width: 820px;
+    margin: 30px auto 60px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .section { margin-top: 45px; scroll-margin-top: 80px; }
+
+  .section-title { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .section-title h2 { font-size: 27px; font-weight: 900; color: var(--accent); white-space: nowrap; }
+  .section-title::before, .section-title::after {
+    content: ""; flex: 1; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(59,42,32,.08);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+
+  .item:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(59,42,32,.15); }
+  .item-name { font-weight: 700; font-size: 18px; }
+  .item-desc { font-size: 13px; color: #7d6a5a; margin-top: 2px; letter-spacing: .3px; }
+  .dots { flex: 1; border-bottom: 2px dotted #cbb79d; transform: translateY(-5px); }
+
+  .price { font-weight: 900; color: var(--accent); font-size: 17px; white-space: nowrap; }
+
+  .price-sizes { display: flex; gap: 14px; white-space: nowrap; }
+  .size-box { display: flex; flex-direction: column; align-items: center; line-height: 1.3; min-width: 34px; }
+  .size-label { font-size: 11px; font-weight: 700; color: #a08b70; }
+  .size-price { font-weight: 900; color: var(--accent); font-size: 16px; }
+
+  footer {
+    background: var(--coffee-dark);
+    color: var(--cream);
+    text-align: center;
+    padding: 35px 20px;
+    font-size: 15px;
+  }
+  footer .logo { font-size: 28px; }
+.ig-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .ig-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: #fff;
+    font-weight: 800;
+    font-size: 15px;
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 30px;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+
+  .ig-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(220,39,67,.4); }
+
+  footer p { color: #bfa98d; margin-top: 6px; }
+
+  .map-btn {
+    display: inline-block;
+    margin-top: 14px;
+    background: var(--gold);
+    color: var(--coffee-dark);
+    font-weight: 800;
+    font-size: 15px;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 30px;
+    transition: background .2s ease, transform .2s ease;
+  }
+  .map-btn:hover { background: #fff; transform: translateY(-2px); }
+
+  @media (max-width: 480px) {
+    .logo { font-size: 42px; }
+    .item { flex-wrap: wrap; }
+    .section-title h2 { font-size: 21px; white-space: normal; }
+  }
+
+  /* ===== Shiko Coffee premium refresh ===== */
+  body { background:
+    radial-gradient(circle at 50% -10%, rgba(152,58,90,.10), transparent 34%),
+    linear-gradient(180deg, #fffaf4 0%, #f6eadb 100%); }
+  header {
+    min-height: 520px;
+    padding: 42px 20px 96px;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(200,161,101,.18), transparent 32%),
+      linear-gradient(145deg, #21150f 0%, #3b2a20 55%, #5a3a2b 100%);
+  }
+  header::before {
+    content:""; position:absolute; inset:18px; border:1px solid rgba(200,161,101,.22);
+    border-radius:28px; pointer-events:none;
+  }
+  header::after { bottom:-52px; height:105px; background:#fffaf4; }
+  .header-row { position:relative; z-index:2; gap:20px; }
+  .logo-img {
+    width:clamp(145px, 28vw, 210px); height:clamp(145px, 28vw, 210px);
+    border:5px solid var(--gold); box-shadow:0 18px 45px rgba(0,0,0,.34);
+    background:#fff; padding:0; margin-bottom:4px;
+    transition:transform .35s ease, box-shadow .35s ease;
+  }
+  .logo-img:hover { transform:translateY(-4px) rotate(-1deg); box-shadow:0 24px 55px rgba(0,0,0,.4); }
+  .brand-text { font-size:clamp(38px, 6vw, 68px)!important; text-shadow:0 3px 18px rgba(0,0,0,.35); }
+  .header-text > p:first-of-type { color:#f1dfc7; font-size:clamp(15px,2vw,19px); }
+  .nav {
+    top:10px; max-width:1000px; margin:-28px auto 0; padding:10px 12px;
+    background:rgba(255,255,255,.88); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(200,161,101,.35); border-radius:22px;
+    box-shadow:0 12px 30px rgba(59,42,32,.12);
+  }
+  .chip { font-size:13px; padding:7px 14px; background:#fffaf5; border-color:#dcc5a5; }
+  .chip.active,.chip:hover { background:var(--brand); border-color:var(--brand); box-shadow:0 6px 16px rgba(152,58,90,.25); }
+  .menu-container { max-width:980px; margin:35px auto 70px; padding:0 16px; }
+  .section { margin-top:52px; scroll-margin-top:92px; }
+  .section-title { margin-bottom:18px; }
+  .section-title h2 { font-size:clamp(22px,3vw,30px); color:var(--brand); }
+  .section-title::before,.section-title::after { background:linear-gradient(90deg,transparent,#c8a165,transparent); }
+  .item {
+    position:relative; overflow:hidden; padding:16px 18px; margin-bottom:11px;
+    border:1px solid rgba(200,161,101,.16); border-radius:18px;
+    background:rgba(255,255,255,.92); box-shadow:0 5px 18px rgba(59,42,32,.07);
+  }
+  .item::before { content:""; position:absolute; right:0; top:0; bottom:0; width:4px; background:linear-gradient(180deg,var(--brand),var(--gold)); opacity:.85; }
+  .item:hover { transform:translateY(-4px); box-shadow:0 12px 28px rgba(59,42,32,.12); }
+  .item-name { font-size:18px; color:#2d2019; }
+  .price,.size-price { color:var(--brand); }
+  .dots { border-bottom-color:#d9c4a7; }
+  footer { padding:46px 20px; background:linear-gradient(145deg,#21150f,#3b2a20); border-top:1px solid rgba(200,161,101,.25); }
+  .map-btn { background:var(--brand); color:#fff; box-shadow:0 8px 18px rgba(152,58,90,.22); }
+  .map-btn:hover { background:var(--gold); color:var(--coffee-dark); }
+  @media (max-width:600px) {
+    header { min-height:470px; padding-top:30px; }
+    header::before { inset:10px; border-radius:22px; }
+    .header-row { gap:8px; }
+    .nav { margin:-24px 10px 0; border-radius:18px; overflow-x:auto; flex-wrap:nowrap; justify-content:flex-start; scrollbar-width:none; }
+    .nav::-webkit-scrollbar { display:none; }
+    .chip { flex:0 0 auto; }
+    .menu-container { padding:0 12px; }
+    .item { align-items:center; }
+    .item-name { font-size:16px; }
+    .item-desc { font-size:12px; }
+  }
+
+
+  /* ===== Header / Footer final polish ===== */
+  header { isolation:isolate; }
+  header .header-row { max-width:1100px; }
+  .header-text { position:relative; }
+  .brand-text { letter-spacing:.2px; }
+  .tagline { font-weight:600; }
+  .address-badge { backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+
+  .nav { transition:box-shadow .25s ease, transform .25s ease; }
+  .nav.is-scrolled { box-shadow:0 14px 32px rgba(59,42,32,.18); }
+  .chip { position:relative; overflow:hidden; }
+  .chip::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent); transform:translateX(-110%); transition:transform .45s ease; }
+  .chip:hover::after,.chip.active::after { transform:translateX(110%); }
+
+  .site-footer { position:relative; overflow:hidden; }
+  .site-footer::before { content:""; position:absolute; width:420px; height:420px; border-radius:50%; background:rgba(152,58,90,.10); top:-240px; left:-140px; pointer-events:none; }
+  .site-footer::after { content:""; position:absolute; width:360px; height:360px; border-radius:50%; border:1px solid rgba(200,161,101,.12); bottom:-230px; right:-120px; pointer-events:none; }
+  .footer-inner { position:relative; z-index:1; max-width:1080px; margin:auto; display:grid; grid-template-columns:1fr 1.2fr 1fr; gap:28px; align-items:center; text-align:right; }
+  .footer-brand { text-align:center; }
+  .footer-logo { width:120px; height:120px; object-fit:contain; border-radius:50%; background:#fff; border:4px solid var(--gold); box-shadow:0 12px 30px rgba(0,0,0,.28); display:block; margin:0 auto 12px; }
+  .footer-brand-name { font-family:'Aref Ruqaa',serif; color:var(--brand); font-size:34px; font-weight:700; line-height:1.2; }
+  .footer-brand p { color:#d9c5ab; margin-top:4px; }
+  .footer-info { display:grid; gap:12px; }
+  .footer-card { display:flex; align-items:center; gap:12px; padding:14px 16px; border:1px solid rgba(200,161,101,.20); background:rgba(255,255,255,.045); border-radius:18px; }
+  .footer-card strong { color:#f5ead9; font-size:15px; }
+  .footer-card p { margin-top:2px; color:#bfa98d; font-size:13px; }
+  .footer-icon { width:42px; height:42px; display:grid; place-items:center; border-radius:50%; background:rgba(200,161,101,.13); font-size:20px; flex:0 0 auto; }
+  .footer-actions { text-align:center; }
+  .footer-actions .ig-row { margin-top:0; }
+  .footer-actions .ig-btn { font-size:13px; padding:9px 14px; }
+  .footer-actions .map-btn { margin-top:14px; }
+  .footer-bottom { position:relative; z-index:1; max-width:1080px; margin:28px auto 0; padding-top:18px; border-top:1px solid rgba(200,161,101,.14); color:#8f7963; font-size:12px; text-align:center; }
+
+  @media (max-width:900px) {
+    .footer-inner { grid-template-columns:1fr; max-width:650px; }
+    .footer-info { order:3; }
+    .footer-actions { order:2; }
+    .footer-brand { order:1; }
+  }
+  @media (max-width:600px) {
+    .footer-logo { width:100px; height:100px; }
+    .footer-brand-name { font-size:30px; }
+    .footer-card { text-align:right; }
+    .footer-actions .ig-row { flex-direction:column; align-items:stretch; }
+    .footer-actions .ig-btn { justify-content:center; }
+  }
+
+  /* ===== Dark mode (automatic — follows the device setting) ===== */
+  :root { color-scheme: light dark; }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      color: var(--cream);
+      background:
+        radial-gradient(circle at 50% -10%, rgba(152,58,90,.20), transparent 34%),
+        linear-gradient(180deg, #1a110c 0%, #241812 100%);
+    }
+
+    /* the curve at the bottom of the header must match the page background */
+    header::after { background: #1a110c; }
+
+    .bg-logo { opacity: .05; }
+
+    /* navigation bar */
+    .nav {
+      background: rgba(36,24,18,.88);
+      border-color: rgba(200,161,101,.28);
+      box-shadow: 0 12px 30px rgba(0,0,0,.45);
+    }
+    .nav.is-scrolled { box-shadow: 0 14px 32px rgba(0,0,0,.6); }
+    .chip { background: #34251c; color: var(--cream); border-color: rgba(200,161,101,.4); }
+
+    /* section titles + prices: lighter pink so they stay readable on dark */
+    .section-title h2,
+    .price,
+    .size-price { color: #e08aa8; }
+
+    /* menu items */
+    .item {
+      background: rgba(48,34,26,.92);
+      border-color: rgba(200,161,101,.20);
+      box-shadow: 0 5px 18px rgba(0,0,0,.35);
+    }
+    .item:hover { box-shadow: 0 12px 28px rgba(0,0,0,.5); }
+    .item-name { color: var(--cream); }
+    .item-desc { color: #b8a58f; }
+    .size-label { color: #b39c80; }
+    .dots { border-bottom-color: #5a4636; }
+  }
+
+  /* ===== WhatsApp button ===== */
+  .ig-btn.wa-btn { background: #128C7E; }
+  .ig-btn.wa-btn:hover { box-shadow: 0 6px 15px rgba(18,140,126,.45); }
+
+  /* ===== Reviews ===== */
+  .reviews { position: relative; z-index: 2; max-width: 980px; margin: 0 auto 70px; padding: 0 16px; scroll-margin-top: 92px; }
+  .reviews-sub { text-align: center; color: #7d6a5a; font-size: 14px; margin: -4px 0 22px; }
+  .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 26px; }
+  .review-card {
+    position: relative; overflow: hidden; padding: 18px 20px;
+    background: rgba(255,255,255,.92); border: 1px solid rgba(200,161,101,.16);
+    border-radius: 18px; box-shadow: 0 5px 18px rgba(59,42,32,.07);
+  }
+  .review-card::before { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, var(--brand), var(--gold)); opacity: .85; }
+  .review-stars { font-size: 18px; letter-spacing: 2px; line-height: 1; margin-bottom: 10px; }
+  .review-stars .on { color: #e0a03a; }
+  .review-stars .off { color: #d9c4a7; }
+  .review-text { font-size: 15px; line-height: 1.8; color: #2d2019; }
+  .review-meta { margin-top: 12px; font-size: 13px; color: #7d6a5a; }
+  .review-meta strong { color: var(--brand); font-weight: 800; font-size: 14px; }
+  .review-empty {
+    grid-column: 1 / -1; text-align: center; padding: 26px 20px;
+    border: 2px dashed rgba(200,161,101,.5); border-radius: 18px; color: #7d6a5a; font-size: 15px;
+  }
+  .review-empty strong { display: block; color: var(--brand); font-size: 18px; margin-bottom: 4px; }
+
+  .review-box {
+    max-width: 640px; margin: 0 auto; padding: 24px 22px;
+    background: rgba(255,255,255,.92); border: 1px solid rgba(200,161,101,.25);
+    border-radius: 22px; box-shadow: 0 12px 30px rgba(59,42,32,.10);
+  }
+  .review-box h3 { text-align: center; font-size: 21px; font-weight: 900; color: var(--brand); }
+  .star-row { display: flex; justify-content: center; gap: 4px; margin: 8px 0 4px; }
+  .star {
+    background: none; border: 0; cursor: pointer; padding: 2px 5px;
+    font-size: 38px; line-height: 1; color: #d9c4a7; transition: transform .15s ease, color .15s ease;
+  }
+  .star.on { color: #e0a03a; }
+  .star:hover { transform: scale(1.15); }
+  .star:focus-visible, .review-input:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .review-input {
+    display: block; width: 100%; margin-top: 10px; padding: 12px 14px;
+    font-family: 'Cairo', sans-serif; font-size: 15px; color: var(--coffee-dark);
+    background: #fffaf5; border: 1.5px solid #dcc5a5; border-radius: 14px;
+  }
+  textarea.review-input { min-height: 100px; resize: vertical; }
+  .review-error { min-height: 22px; margin-top: 8px; text-align: center; font-size: 13px; font-weight: 700; color: #b3261e; }
+  .review-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .review-send, .review-google {
+    flex: 1 1 200px; text-align: center; font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 800;
+    padding: 12px 20px; border-radius: 30px; cursor: pointer; text-decoration: none;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .review-send { background: #128C7E; color: #fff; border: 1.5px solid #128C7E; }
+  .review-send:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(18,140,126,.4); }
+  .review-google { background: transparent; color: var(--coffee); border: 1.5px solid var(--gold); }
+  .review-google:hover { transform: translateY(-2px); background: var(--gold); color: var(--coffee-dark); }
+  .review-hint { margin-top: 12px; text-align: center; font-size: 12px; color: #7d6a5a; }
+
+  @media (prefers-color-scheme: dark) {
+    .reviews-sub, .review-meta, .review-empty, .review-hint { color: #b8a58f; }
+    .review-card, .review-box {
+      background: rgba(48,34,26,.92); border-color: rgba(200,161,101,.20);
+      box-shadow: 0 5px 18px rgba(0,0,0,.35);
+    }
+    .review-text { color: var(--cream); }
+    .review-meta strong, .review-empty strong, .review-box h3 { color: #e08aa8; }
+    .review-stars .off, .star { color: #5a4636; }
+    .review-stars .on, .star.on { color: #f0b84a; }
+    .review-input { background: #34251c; color: var(--cream); border-color: rgba(200,161,101,.4); }
+    .review-input::placeholder { color: #9a8670; }
+    .review-google { color: var(--cream); }
+    .review-error { color: #ff8a80; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="bg-logo" style="background-image:url('shiko-logo.png');"></div>
+
+<header>
+  <div class="header-row">
+    <img src="shiko-logo.png" alt="لوجو قهوة شيكو" class="logo-img">
+    <div class="header-text">
+      <div class="brand-text">قهوة شيكو</div>
+      <p class="tagline">قهوتك على أصولها ☕</p>
+      <div class="address-badge">📍 ٧ شارع الثورة - الكوربة - مصر الجديدة</div>
+    </div>
+  </div>
+</header>
+
+<nav class="nav" id="menuNav">
+  <div style="padding:6px 12px;font-weight:700;color:#7d6a5a;">جاري تحميل القائمة...</div>
+</nav>
+
+<div class="menu-container" id="menuContainer">
+  <div class="section" id="menuLoading">
+    <div class="section-title"><h2>☕ القائمة</h2></div>
+    <div class="item">
+      <div>
+        <div class="item-name">جاري تحميل القائمة...</div>
+        <div class="item-desc">يتم جلب الأصناف والأسعار من قاعدة البيانات</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="reviews" id="reviews">
+  <div class="section-title"><h2>⭐ آراء زباينا</h2></div>
+  <p class="reviews-sub">رأيك يهمنا ويساعدنا نبقى أحسن ☕</p>
+
+  <div class="reviews-grid" id="reviewsGrid"></div>
+
+  <div class="review-box">
+    <h3>قيّم تجربتك مع شيكو</h3>
+    <div class="star-row" id="starRow" role="radiogroup" aria-label="التقييم">
+      <button type="button" class="star" role="radio" aria-checked="false" aria-label="نجمة واحدة">★</button>
+      <button type="button" class="star" role="radio" aria-checked="false" aria-label="نجمتين">★</button>
+      <button type="button" class="star" role="radio" aria-checked="false" aria-label="٣ نجوم">★</button>
+      <button type="button" class="star" role="radio" aria-checked="false" aria-label="٤ نجوم">★</button>
+      <button type="button" class="star" role="radio" aria-checked="false" aria-label="٥ نجوم">★</button>
+    </div>
+    <input class="review-input" id="reviewName" type="text" maxlength="40" placeholder="اسمك (اختياري)" autocomplete="name">
+    <textarea class="review-input" id="reviewText" maxlength="500" placeholder="اكتب رأيك في القهوة أو الخدمة (اختياري)"></textarea>
+    <div class="review-error" id="reviewError" role="alert"></div>
+    <div class="review-actions">
+      <button type="button" class="review-send" id="reviewSend">💬 ابعت تقييمك على واتساب</button>
+      <a class="review-google" href="https://www.google.com/maps/search/?api=1&query=%D9%A7%D9%84%D9%83%D9%88%D8%B1%D8%A8%D8%A9+%D8%B4%D8%A7%D8%B1%D8%B9+%D8%A7%D9%84%D8%AB%D9%88%D8%B1%D8%A9+%D9%A7+%D9%85%D8%B5%D8%B1+%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9" target="_blank" rel="noopener">⭐ قيّمنا على خرائط جوجل</a>
+    </div>
+    <p class="review-hint">التقييم بيوصلنا على واتساب، وبنعرض أحسن الآراء هنا 💛</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="shiko-logo.png" alt="لوجو قهوة شيكو" class="footer-logo">
+      <div class="footer-brand-name">قهوة شيكو</div>
+      <p>قهوتك على أصولها ☕</p>
+    </div>
+
+    <div class="footer-info">
+      <div class="footer-card">
+        <span class="footer-icon">📍</span>
+        <div>
+          <strong>العنوان</strong>
+          <p>٧ شارع الثورة - الكوربة - مصر الجديدة</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-actions">
+      <div class="ig-row">
+        <a href="https://wa.me/201035641725?text=%D8%A3%D9%87%D9%84%D8%A7%D9%8B%20%D9%82%D9%87%D9%88%D8%A9%20%D8%B4%D9%8A%D9%83%D9%88%D8%8C%20%D8%B9%D9%86%D8%AF%D9%8A%20%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1" target="_blank" rel="noopener" class="ig-btn wa-btn">
+          💬 واتساب للاستفسارات · <span dir="ltr">01035641725</span>
+        </a>
+        <a href="https://www.instagram.com/amin.shiko11" target="_blank" rel="noopener" class="ig-btn">
+          Instagram · amin.shiko11
+        </a>
+        <a href="https://www.instagram.com/shiko.coffee" target="_blank" rel="noopener" class="ig-btn">
+          Instagram · shiko.coffee
+        </a>
+      </div>
+      <a href="https://www.google.com/maps/search/?api=1&query=%D9%A7%D9%84%D9%83%D9%88%D8%B1%D8%A8%D8%A9+%D8%B4%D8%A7%D8%B1%D8%B9+%D8%A7%D9%84%D8%AB%D9%88%D8%B1%D8%A9+%D9%A7+%D9%85%D8%B5%D8%B1+%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9" target="_blank" rel="noopener" class="map-btn">افتح في خرائط جوجل 🗺️</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 قهوة شيكو — كل الحقوق محفوظة</div>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ===== Shiko Coffee + Supabase =====
+  // ضع Publishable Key الخاصة بمشروعك هنا فقط.
+  // لا تستخدم Service Role Key نهائيًا في الموقع.
+  const SUPABASE_URL = 'https://cbdzfawqxunpnyacdlcr.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_vk7jLZh110IKOLdQ1DEcRg_WnbskktCNEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_vk7jLZh110IKOLdQ1DEcRg_WnbskktCNEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_vk7jLZh110IKOLdQ1DEcRg_WnbskktC';
+
+  const shikoSupabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  const CATEGORY_ORDER = [
+    { keys: ['hot', 'hot drinks', 'hot_drinks', 'hot-drinks', 'مشروبات ساخنة', 'مشروبات ساخنه'], title: '☕ مشروبات ساخنة' },
+    { keys: ['cold', 'cold drinks', 'cold_drinks', 'cold-drinks', 'iced', 'مشروبات باردة', 'مشروبات بارده'], title: '🧊 مشروبات باردة' },
+    { keys: ['juice', 'juices', 'عصائر'], title: '🍹 عصائر' },
+    { keys: ['milkshake', 'milk shake', 'milkshakes', 'smoothie', 'shakes', 'milkshake & smoothie', 'ميلك شيك', 'سموذي', 'ميلك شيك و سموذي', 'ميلك شيك و سموذى'], title: '🥛 ميلك شيك و سموذي' },
+    { keys: ['soft drinks', 'soft drink', 'sodas', 'soda', 'مشروبات غازية', 'مشروبات غازيه'], title: '🥤 مشروبات غازية' },
+    { keys: ['special', 'special shiko', 'shiko special', 'سبيشال شيكو'], title: '⭐ سبيشال شيكو' },
+    { keys: ['bakery', 'pastry', 'pastries', 'baked', 'مخبوزات'], title: '🥐 مخبوزات' },
+    { keys: ['sandwich', 'sandwiches', 'ساندوتشات'], title: '🥪 ساندوتشات' },
+    { keys: ['cake', 'cakes', 'dessert', 'desserts', 'gato', 'gâteau', 'جاتوه'], title: '🍰 جاتوه' },
+    { keys: ['extras', 'extra', 'add-ons', 'add ons', 'إضافات', 'اضافات'], title: '➕ إضافات' }
+  ];
+
+  const normalizeCategory = (value) =>
+    String(value ?? '').toLowerCase().trim().replace(/[\u064B-\u0652]/g, '');
+
+  function categoryTitle(category) {
+    const normalized = normalizeCategory(category);
+    const found = CATEGORY_ORDER.find(c => c.keys.some(k => normalizeCategory(k) === normalized));
+    return found ? found.title : (category ? String(category) : 'أخرى');
+  }
+
+  function categoryRank(category) {
+    const normalized = normalizeCategory(category);
+    const index = CATEGORY_ORDER.findIndex(c => c.keys.some(k => normalizeCategory(k) === normalized));
+    return index === -1 ? 999 : index;
+  }
+
+  function formatPrice(value) {
+    if (value === null || value === undefined || value === '') return null;
+    const n = Number(value);
+    if (!Number.isFinite(n)) return null;
+    return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.?0+$/, '');
+  }
+
+  function priceHTML(item) {
+    const s = formatPrice(item.price_s);
+    const m = formatPrice(item.price_m);
+    if (s !== null || m !== null) {
+      return `
+        <div class="price-sizes">
+          <div class="size-box"><span class="size-label">S</span><span class="size-price">${s ?? '—'}</span></div>
+          <div class="size-box"><span class="size-label">M</span><span class="size-price">${m ?? '—'}</span></div>
+        </div>`;
+    }
+    return `<div class="price">${formatPrice(item.price) ?? '—'}</div>`;
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;'
+    }[ch]));
+  }
+
+  async function loadShikoMenu() {
+    const container = document.getElementById('menuContainer');
+    const nav = document.getElementById('menuNav');
+
+    try {
+      const { data, error } = await shikoSupabase
+        .from('menu_items')
+        .select('id,name,description,price,price_s,price_m,category,available,created_at')
+        .eq('available', true)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      if (!data || !data.length) {
+        container.innerHTML = `
+          <div class="section" id="menuEmpty">
+            <div class="section-title"><h2>☕ القائمة</h2></div>
+            <div class="item">
+              <div>
+                <div class="item-name">لا توجد أصناف متاحة حاليًا</div>
+                <div class="item-desc">NO AVAILABLE ITEMS</div>
+              </div>
+            </div>
+          </div>`;
+        nav.innerHTML = '';
+        return;
+      }
+
+      const groups = new Map();
+
+      data.forEach(item => {
+        const key = normalizeCategory(item.category) || 'other';
+        if (!groups.has(key)) {
+          groups.set(key, { category: item.category, items: [] });
+        }
+        groups.get(key).items.push(item);
+      });
+
+      const orderedGroups = [...groups.values()].sort((a, b) => {
+        const rankDiff = categoryRank(a.category) - categoryRank(b.category);
+        if (rankDiff !== 0) return rankDiff;
+        return String(a.category ?? '').localeCompare(String(b.category ?? ''));
+      });
+
+      nav.innerHTML = orderedGroups.map((group, index) =>
+        `<button type="button" class="chip" data-section="sec${index}">${escapeHTML(categoryTitle(group.category))}</button>`
+      ).join('');
+
+      container.innerHTML = orderedGroups.map((group, index) => `
+        <div class="section" id="sec${index}">
+          <div class="section-title"><h2>${escapeHTML(categoryTitle(group.category))}</h2></div>
+          ${group.items.map(item => `
+            <div class="item">
+              <div>
+                <div class="item-name">${escapeHTML(item.name)}</div>
+                ${item.description ? `<div class="item-desc">${escapeHTML(item.description)}</div>` : ''}
+              </div>
+              <div class="dots"></div>
+              ${priceHTML(item)}
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+
+      // نفس حركة التبويبات الموجودة في التصميم الأصلي.
+      nav.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const target = document.getElementById(chip.dataset.section);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      window.dispatchEvent(new Event('shiko-menu-loaded'));
+    } catch (error) {
+      console.error('Supabase menu error:', error);
+      nav.innerHTML = '';
+      container.innerHTML = `
+        <div class="section" id="menuError">
+          <div class="section-title"><h2>⚠️ تعذر تحميل القائمة</h2></div>
+          <div class="item">
+            <div>
+              <div class="item-name">حصل خطأ أثناء الاتصال بقاعدة البيانات</div>
+              <div class="item-desc">تأكد من وضع Publishable Key الصحيحة ثم أعد تحميل الصفحة</div>
+            </div>
+          </div>
+        </div>`;
+    }
+  }
+
+  loadShikoMenu();
+</script>
+
+<script>
+  function initMenuNavigation() {
+  const chips = [...document.querySelectorAll('.chip')];
+  const secs  = [...document.querySelectorAll('.section')];
+  const nav   = document.querySelector('.nav');
+
+  let activeIndex = -1;
+  let lockedIndex = null;   // بعد الضغط على تبويب، نثبّته لحد ما السكرول يخلص
+  let unlockTimer;
+
+  function setActive(index) {
+    if (index === activeIndex) return;
+    activeIndex = index;
+    chips.forEach((chip, i) => {
+      chip.classList.toggle('active', i === index);
+      if (i === index) chip.setAttribute('aria-current', 'true');
+      else chip.removeAttribute('aria-current');
+    });
+    // على الموبايل الشريط بيتحرك أفقيًا، فنوصّل التبويب النشط لنص الشاشة
+    if (chips[index] && window.innerWidth <= 600) {
+      chips[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }
+
+  // أنهي قسم أنا فيه دلوقتي؟
+  function currentIndex() {
+    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    if (atBottom) {
+      let last = 0;
+      secs.forEach((s, i) => { if (s.getBoundingClientRect().top <= window.innerHeight * 0.7) last = i; });
+      return last;
+    }
+
+    // الخط اللي بنقيس عليه: تحت الشريط العلوي مباشرة
+    const limit = Math.max(92, 10 + nav.offsetHeight) + 30;
+    const passed = [];
+    secs.forEach((s, i) => {
+      const top = s.getBoundingClientRect().top;
+      if (top <= limit) passed.push({ i, top });
+    });
+    if (!passed.length) return 0;
+
+    // في اللاب توب فيه قسمين جنب بعض في نفس الصف، نفضّل النشط لو هو منهم
+    const maxTop = Math.max(...passed.map(p => p.top));
+    const row = passed.filter(p => maxTop - p.top < 4).map(p => p.i);
+    return row.includes(activeIndex) ? activeIndex : row[0];
+  }
+
+  function onScroll() {
+    nav.classList.toggle('is-scrolled', window.scrollY > 80);
+    if (lockedIndex !== null) {
+      setActive(lockedIndex);
+      clearTimeout(unlockTimer);
+      unlockTimer = setTimeout(() => { lockedIndex = null; }, 150);
+      return;
+    }
+    setActive(currentIndex());
+  }
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { ticking = false; onScroll(); });
+  }, { passive: true });
+
+  window.addEventListener('resize', () => setActive(currentIndex()));
+
+  chips.forEach((chip, index) => {
+    chip.addEventListener('click', () => {
+      lockedIndex = index;
+      setActive(index);
+      clearTimeout(unlockTimer);
+      unlockTimer = setTimeout(() => { lockedIndex = null; }, 250);
+    });
+  });
+
+  setActive(currentIndex());
+  }
+
+  window.addEventListener('shiko-menu-loaded', initMenuNavigation, { once: true });
+</script>
+
+<script>
+  // ===== التقييمات =====
+  const WHATSAPP_NUMBER = '201035641725';
+
+  // ضيف هنا التقييمات الحقيقية اللي وافق عليها الزبون، بالشكل ده:
+  // { name: "اسم الزبون", rating: 5, text: "نص التقييم", date: "سبتمبر ٢٠٢٦" },
+  const REVIEWS = [
+  ];
+
+  (function () {
+    const grid = document.getElementById('reviewsGrid');
+
+    function el(tag, cls, text) {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text !== undefined) e.textContent = text;
+      return e;
+    }
+
+    if (!REVIEWS.length) {
+      const empty = el('div', 'review-empty');
+      empty.appendChild(el('strong', '', 'كن أول واحد يقيّمنا!'));
+      empty.appendChild(el('span', '', 'جرّبت شيكو؟ قولنا رأيك من الكارت اللي تحت 👇'));
+      grid.appendChild(empty);
+    } else {
+      REVIEWS.forEach(r => {
+        const n = Math.max(1, Math.min(5, Number(r.rating) || 5));
+        const card = el('article', 'review-card');
+        const st = el('div', 'review-stars');
+        st.setAttribute('aria-label', n + ' من 5');
+        st.appendChild(el('span', 'on', '★'.repeat(n)));
+        st.appendChild(el('span', 'off', '★'.repeat(5 - n)));
+        card.appendChild(st);
+        if (r.text) card.appendChild(el('p', 'review-text', r.text));
+        const meta = el('div', 'review-meta');
+        meta.appendChild(el('strong', '', r.name || 'زبون شيكو'));
+        if (r.date) meta.appendChild(el('span', '', ' · ' + r.date));
+        card.appendChild(meta);
+        grid.appendChild(card);
+      });
+    }
+
+    // نجوم التقييم + الإرسال على واتساب
+    let rating = 0;
+    const row = document.getElementById('starRow');
+    const stars = [...row.querySelectorAll('.star')];
+    const err = document.getElementById('reviewError');
+
+    function paint(v) {
+      stars.forEach((b, i) => {
+        b.classList.toggle('on', i < v);
+        b.setAttribute('aria-checked', String(i + 1 === rating));
+      });
+    }
+    stars.forEach((b, i) => {
+      b.addEventListener('click', () => { rating = i + 1; paint(rating); err.textContent = ''; });
+      b.addEventListener('mouseenter', () => paint(i + 1));
+    });
+    row.addEventListener('mouseleave', () => paint(rating));
+
+    document.getElementById('reviewSend').addEventListener('click', () => {
+      if (!rating) { err.textContent = 'اختار عدد النجوم الأول ⭐'; return; }
+      const name = document.getElementById('reviewName').value.trim();
+      const text = document.getElementById('reviewText').value.trim();
+      const lines = [
+        '⭐ تقييم جديد لقهوة شيكو',
+        'التقييم: ' + '★'.repeat(rating) + '☆'.repeat(5 - rating) + ' (' + rating + '/5)'
+      ];
+      if (name) lines.push('الاسم: ' + name);
+      if (text) lines.push('الرأي: ' + text);
+      window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    });
+  })();
+</script>
+
+</body>
+</html>
