@@ -891,6 +891,7 @@
     // 2) تحديث من Supabase
     try {
       const fresh = await fetchRemote();
+      if (!fresh.categories.length) return;   // قاعدة البيانات لسه فاضية (قبل الاستيراد) → نسيب النسخة المحلية
       if (JSON.stringify(fresh) !== JSON.stringify(current)) {
         renderAll(fresh);
         current = fresh;

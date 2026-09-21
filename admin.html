@@ -469,6 +469,7 @@
     if (/could not find the function|is_admin/i.test(m)) return 'قاعدة البيانات لسه متجهزتش — شغّل ملف supabase/setup.sql في SQL Editor الأول';
     if (/relation .* does not exist|schema cache/i.test(m)) return 'الجداول مش موجودة — شغّل ملف supabase/setup.sql في SQL Editor';
     if (/rate limit|too many requests/i.test(m)) return 'محاولات كتير — استنى دقيقة وجرّب تاني';
+    if (/duplicate key|23505/i.test(m)) return 'البيانات دي موجودة بالفعل';
     if (/password should be at least|weak password/i.test(m)) return 'كلمة السر ضعيفة — لازم ٦ حروف على الأقل';
     if (/same password|different from the old/i.test(m)) return 'كلمة السر الجديدة لازم تكون مختلفة عن القديمة';
     if (/failed to fetch|networkerror|load failed/i.test(m)) return 'مفيش اتصال بالإنترنت أو الرابط في config.js غلط';
@@ -545,6 +546,7 @@
       updateItem: async (id, patch) => check(await table('items').update(patch).eq('id', id)),
       deleteItem: async (id) => check(await table('items').delete().eq('id', id)),
       saveSettings: async (s) => check(await table('settings').upsert({ id: 1, ...s, updated_at: new Date().toISOString() })),
+      insertMany: async (t, rows) => check(await table(t).insert(rows)),
 
       uploadImage: async (blob, folder) => {
         const path = `${folder}/${uid()}.${extOf(blob)}`;
@@ -592,6 +594,7 @@
       updateItem: async (id, patch) => { Object.assign(data.items.find((x) => x.id === id) || {}, patch); save(); return delay(); },
       deleteItem: async (id) => { data.items = data.items.filter((x) => x.id !== id); save(); return delay(); },
       saveSettings: async (s) => { data.settings = { ...(data.settings || {}), id: 1, ...s }; save(); return delay(); },
+      insertMany: async (t, rows) => { data[t].push(...rows.map((r) => ({ id: uid(), created_at: new Date().toISOString(), ...r }))); save(); return delay(); },
       uploadImage: async (blob) => blobToDataURL(blob),
       deleteImage: async () => {},
     };
@@ -642,16 +645,46 @@
     return `<span class="badge">${fmt(it.price)} <small>ج</small></span>`;
   }
 
+  /* ---------- استيراد المنيو الحالي (أول مرة بس، لما قاعدة البيانات تكون فاضية) ---------- */
+  function emptyMenuHTML() {
+    const seed = window.SHIKO_SEED;
+    const n = seed ? `${seed.categories.length} أقسام و ${seed.items.length} صنف` : '';
+    return `<div class="empty">
+      <strong>المنيو لسه فاضي</strong>
+      ${seed ? `<p style="margin:6px 0 14px">تقدر تضيف منيو قهوة شيكو الحالي (${n}) بضغطة واحدة، أو تبدأ من الصفر بإضافة قسم.</p>
+      <button type="button" class="btn btn-primary" data-act="import">📥 استيراد المنيو الحالي</button>` : 'ابدأ بإضافة قسم من تبويب "الأقسام"'}
+    </div>`;
+  }
+  async function importSeed(btn) {
+    const seed = window.SHIKO_SEED;
+    if (!seed) return;
+    if (state.categories.length) { toast('المنيو مش فاضي — الاستيراد بيشتغل بس لما يكون فاضي', 'err'); return; }
+    if (!confirm(`هيتم إضافة ${seed.categories.length} أقسام و ${seed.items.length} صنف بأسعارهم. نكمل؟`)) return;
+    await busy(btn, 'جاري الاستيراد…', async () => {
+      try {
+        await api.insertMany('categories', seed.categories.map((c) => ({ id: c.id, name: c.name, icon: c.icon || '', sort_order: c.sort_order, is_active: c.is_active !== false })));
+        await api.insertMany('items', seed.items.map((i) => ({
+          id: i.id, category_id: i.category_id, name: i.name, description: i.description || '',
+          price: i.price ?? null, price_s: i.price_s ?? null, price_m: i.price_m ?? null, price_l: i.price_l ?? null,
+          sort_order: i.sort_order, is_available: i.is_available !== false,
+        })));
+        if (!state.settings?.shop_name && seed.settings) {
+          const st = seed.settings;
+          await api.saveSettings({ shop_name: st.shop_name || '', tagline: st.tagline || '', address: st.address || '', whatsapp: st.whatsapp || '', instagram1: st.instagram1 || '', instagram2: st.instagram2 || '', maps_url: st.maps_url || '' });
+        }
+        toast('تم استيراد المنيو ✅');
+        await refresh();
+      } catch (err) { toast(friendlyError(err), 'err'); }
+    });
+  }
+
   function renderItems() {
     const q = state.search.trim().toLowerCase();
     let list;
     if (q) list = state.items.filter((i) => (i.name + ' ' + (i.description || '')).toLowerCase().includes(q));
     else list = state.items.filter((i) => i.category_id === state.catId);
 
-    if (!state.categories.length) {
-      $('itemList').innerHTML = `<div class="empty"><strong>مفيش أقسام لسه</strong>ابدأ بإضافة قسم من تبويب "الأقسام"</div>`;
-      return;
-    }
+    if (!state.categories.length) { $('itemList').innerHTML = emptyMenuHTML(); return; }
     if (!list.length) {
       $('itemList').innerHTML = q
         ? `<div class="empty">مفيش صنف بالاسم ده</div>`
@@ -693,6 +726,7 @@
   $('itemList').addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-act]');
     if (!btn || btn.tagName === 'INPUT') return;
+    if (btn.dataset.act === 'import') { importSeed(btn); return; }
     const row = btn.closest('.row'); const id = row.dataset.id;
     const it = state.items.find((x) => x.id === id); if (!it) return;
     const act = btn.dataset.act;
@@ -828,7 +862,7 @@
   function renderCats() {
     const counts = {};
     state.items.forEach((i) => { counts[i.category_id] = (counts[i.category_id] || 0) + 1; });
-    if (!state.categories.length) { $('catList').innerHTML = `<div class="empty"><strong>مفيش أقسام</strong>اضغط "إضافة قسم"</div>`; return; }
+    if (!state.categories.length) { $('catList').innerHTML = emptyMenuHTML(); return; }
     $('catList').innerHTML = state.categories.map((c, idx) => `
       <div class="row cat-row${c.is_active === false ? ' off' : ''}" data-id="${c.id}">
         <div class="icon">${esc(c.icon) || '📂'}</div>
@@ -857,6 +891,7 @@
   $('btnAddCat').addEventListener('click', () => openCatModal(null));
   $('catList').addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-act]'); if (!btn || btn.tagName === 'INPUT') return;
+    if (btn.dataset.act === 'import') { importSeed(btn); return; }
     const id = btn.closest('.row').dataset.id; const c = state.categories.find((x) => x.id === id); if (!c) return;
     const act = btn.dataset.act;
     try {
