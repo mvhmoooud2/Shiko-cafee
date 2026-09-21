@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#241812">
+<title>لوحة التحكم | قهوة شيكو</title>
+<link rel="icon" href="shiko-logo.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --coffee: #3b2a20; --coffee-dark: #241812; --cream: #f5ead9; --gold: #c8a165;
+    --accent: #a05c2c; --brand: #983a5a; --brand-dark: #7d2f4a;
+    --ink: #2d2019; --muted: #7d6a5a; --line: rgba(200,161,101,.35);
+    --ok: #1f8a5b; --danger: #b3261e; --warn: #b7791f;
+    --card: rgba(255,255,255,.94);
+  }
+  html { color-scheme: light; }
+  body {
+    font-family: 'Cairo', sans-serif; color: var(--ink); line-height: 1.7; min-height: 100vh;
+    background: radial-gradient(circle at 50% -10%, rgba(152,58,90,.10), transparent 34%),
+                linear-gradient(180deg, #fffaf4 0%, #f6eadb 100%);
+  }
+  [hidden] { display: none !important; }
+  button, input, select, textarea { font-family: inherit; font-size: inherit; }
+  img { display: block; }
+  a { color: var(--brand); }
+
+  /* ---------- أزرار ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border: 1.5px solid transparent; border-radius: 30px; padding: 10px 20px; cursor: pointer;
+    font-weight: 800; font-size: 15px; line-height: 1.4; transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    background: #fffaf5; color: var(--coffee); border-color: #dcc5a5; white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+  .btn-primary { background: var(--brand); color: #fff; border-color: var(--brand); box-shadow: 0 6px 16px rgba(152,58,90,.25); }
+  .btn-primary:hover { background: var(--brand-dark); }
+  .btn-gold { background: var(--gold); color: var(--coffee-dark); border-color: var(--gold); }
+  .btn-danger { background: #fff; color: var(--danger); border-color: rgba(179,38,30,.35); }
+  .btn-danger:hover { background: #fff3f2; }
+  .btn-ghost { background: transparent; border-color: rgba(255,255,255,.35); color: #fff; }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-icon { width: 38px; height: 38px; padding: 0; border-radius: 12px; font-size: 16px; }
+  .btn-block { width: 100%; }
+
+  /* ---------- حقول ---------- */
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .field label { font-weight: 800; font-size: 14px; color: var(--coffee); }
+  .field .hint { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .input {
+    width: 100%; padding: 11px 14px; border-radius: 14px; border: 1.5px solid #dcc5a5;
+    background: #fffaf5; color: var(--ink); font-size: 15px; outline: none; transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(152,58,90,.15); }
+  .input[dir="ltr"] { text-align: left; }
+  textarea.input { min-height: 90px; resize: vertical; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 12px; }
+  @media (max-width: 520px) { .grid2 { grid-template-columns: 1fr; } }
+  .radio-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .radio-pill { position: relative; }
+  .radio-pill input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .radio-pill span {
+    display: inline-block; padding: 7px 16px; border-radius: 30px; border: 1.5px solid #dcc5a5;
+    background: #fffaf5; font-weight: 800; font-size: 14px; cursor: pointer;
+  }
+  .radio-pill input:checked + span { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .check { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px; cursor: pointer; }
+  .check input { width: 20px; height: 20px; accent-color: var(--brand); }
+
+  .switch { position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 800; color: var(--muted); user-select: none; }
+  .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .switch .track { width: 44px; height: 24px; border-radius: 30px; background: #d9c4a7; position: relative; transition: background .2s ease; flex: 0 0 auto; }
+  .switch .track::after { content: ""; position: absolute; top: 3px; right: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .2s ease; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+  .switch input:checked + .track { background: var(--ok); }
+  .switch input:checked + .track::after { transform: translateX(-20px); }
+  .switch input:checked ~ .sw-text { color: var(--ok); }
+
+  /* ---------- شاشات الدخول ---------- */
+  .screen { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
+  .auth-card {
+    width: 100%; max-width: 420px; background: var(--card); border: 1px solid var(--line); border-radius: 26px;
+    padding: 32px 26px; box-shadow: 0 20px 50px rgba(59,42,32,.14); text-align: center;
+  }
+  .auth-card .logo { width: 96px; height: 96px; border-radius: 50%; object-fit: contain; background: #fff; border: 4px solid var(--gold); margin: 0 auto 12px; box-shadow: 0 10px 25px rgba(0,0,0,.18); }
+  .auth-card h1 { font-size: 24px; font-weight: 900; color: var(--brand); }
+  .auth-card p.sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+  .auth-card form { text-align: right; }
+  .msg { min-height: 22px; font-size: 13px; font-weight: 700; margin: 6px 0 10px; text-align: center; }
+  .msg.err { color: var(--danger); } .msg.ok { color: var(--ok); }
+  .link-btn { background: none; border: 0; color: var(--brand); font-weight: 800; cursor: pointer; font-size: 13px; text-decoration: underline; }
+  .setup-box { text-align: right; background: #fff7ea; border: 1px dashed var(--gold); border-radius: 16px; padding: 14px 16px; font-size: 14px; margin-top: 12px; }
+  .setup-box ol { padding-right: 20px; } .setup-box code { background: #f3e7d6; padding: 1px 6px; border-radius: 6px; font-size: 13px; direction: ltr; unicode-bidi: embed; }
+  .demo-note { margin-top: 14px; background: #fff7ea; border: 1px dashed var(--gold); border-radius: 14px; padding: 10px 14px; font-size: 13px; text-align: right; }
+
+  /* ---------- اللوحة ---------- */
+  .topbar {
+    background: linear-gradient(145deg, #21150f 0%, #3b2a20 60%, #5a3a2b 100%); color: var(--cream);
+    padding: 12px 16px; border-bottom: 1px solid rgba(200,161,101,.35);
+  }
+  .topbar-inner { max-width: 1040px; margin: auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .topbar img { width: 46px; height: 46px; border-radius: 50%; object-fit: contain; background: #fff; border: 2px solid var(--gold); }
+  .topbar .title { font-weight: 900; font-size: 18px; line-height: 1.3; }
+  .topbar .title small { display: block; font-size: 12px; color: #d9c5ab; font-weight: 600; }
+  .topbar .spacer { flex: 1; }
+  .topbar .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .demo-banner { background: #fff1c9; color: #7a5a05; text-align: center; font-weight: 800; font-size: 13px; padding: 8px 14px; border-bottom: 1px solid #f0d78a; }
+
+  .tabs {
+    position: sticky; top: 0; z-index: 40; display: flex; gap: 6px; padding: 10px 12px; max-width: 1040px; margin: 12px auto 0;
+    background: rgba(255,255,255,.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--line); border-radius: 20px; overflow-x: auto; scrollbar-width: none;
+    box-shadow: 0 10px 26px rgba(59,42,32,.10);
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { flex: 1 0 auto; border: 1.5px solid transparent; background: transparent; border-radius: 30px; padding: 8px 16px; font-weight: 800; font-size: 14px; cursor: pointer; color: var(--coffee); white-space: nowrap; }
+  .tab.active { background: var(--brand); color: #fff; box-shadow: 0 6px 16px rgba(152,58,90,.25); }
+  @media (max-width: 600px) { .tabs { margin: 10px 10px 0; } }
+
+  main { max-width: 1040px; margin: 18px auto 80px; padding: 0 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px; box-shadow: 0 6px 20px rgba(59,42,32,.07); margin-bottom: 16px; }
+  .card h2 { font-size: 20px; font-weight: 900; color: var(--brand); margin-bottom: 4px; }
+  .card .sub { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+  .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .toolbar .grow { flex: 1 1 200px; }
+
+  .cat-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .cchip { border: 1.5px solid #dcc5a5; background: #fffaf5; color: var(--coffee); border-radius: 30px; padding: 6px 14px; font-weight: 800; font-size: 13px; cursor: pointer; }
+  .cchip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .cchip .n { opacity: .7; font-size: 12px; }
+
+  .row {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 10px;
+    background: #fff; border: 1px solid rgba(200,161,101,.22); border-radius: 16px; position: relative; overflow: hidden;
+  }
+  .row::before { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, var(--brand), var(--gold)); }
+  .row.off { opacity: .6; background: #faf5ee; }
+  .row.off::before { background: #cbb79d; }
+  .thumb { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; background: #f3e7d6; border: 1px solid var(--line); flex: 0 0 auto; }
+  .thumb-empty { display: grid; place-items: center; color: #b39c80; font-size: 22px; }
+  .row .info { flex: 1 1 160px; min-width: 0; }
+  .row .name { font-weight: 800; font-size: 16px; }
+  .row .desc { font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+  .row .cat-tag { display: inline-block; font-size: 11px; background: #f3e7d6; color: var(--coffee); border-radius: 20px; padding: 0 8px; margin-right: 6px; }
+  .prices { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge { background: rgba(152,58,90,.08); color: var(--brand); border: 1px solid rgba(152,58,90,.2); border-radius: 20px; padding: 2px 10px; font-weight: 900; font-size: 13px; white-space: nowrap; }
+  .badge small { font-weight: 700; color: var(--muted); margin-left: 3px; }
+  .row .acts { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+  @media (max-width: 640px) {
+    .row { flex-wrap: wrap; }
+    .row .acts { width: 100%; justify-content: space-between; border-top: 1px dashed var(--line); padding-top: 10px; margin-top: 2px; }
+    .row .acts .group { display: flex; gap: 6px; }
+  }
+  .row .acts .group { display: flex; gap: 6px; }
+  .empty { text-align: center; padding: 30px 16px; border: 2px dashed rgba(200,161,101,.5); border-radius: 18px; color: var(--muted); font-size: 15px; }
+  .empty strong { display: block; color: var(--brand); font-size: 17px; }
+
+  .cat-row .icon { font-size: 26px; width: 44px; text-align: center; flex: 0 0 auto; }
+
+  .img-picker { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .img-picker .preview { width: 96px; height: 96px; border-radius: 16px; object-fit: cover; background: #f3e7d6; border: 1.5px dashed #dcc5a5; display: grid; place-items: center; color: #b39c80; font-size: 28px; overflow: hidden; }
+  .img-picker .preview img { width: 100%; height: 100%; object-fit: cover; }
+  .img-picker .preview.logo img { object-fit: contain; background: #fff; }
+  .img-picker input[type=file] { display: none; }
+  .img-picker .col { display: flex; flex-direction: column; gap: 8px; }
+
+  /* ---------- مودال ---------- */
+  .modal { position: fixed; inset: 0; z-index: 100; background: rgba(20,12,8,.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: grid; place-items: center; padding: 16px; overflow-y: auto; }
+  .modal-box { width: 100%; max-width: 560px; background: #fffdf9; border-radius: 24px; padding: 22px 20px; box-shadow: 0 30px 70px rgba(0,0,0,.35); border: 1px solid var(--line); max-height: calc(100vh - 32px); overflow-y: auto; animation: pop .18s ease; }
+  @keyframes pop { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .modal-box h3 { font-size: 20px; font-weight: 900; color: var(--brand); margin-bottom: 14px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-start; margin-top: 8px; flex-wrap: wrap; }
+  @media (max-width: 520px) { .modal { padding: 0; align-items: end; } .modal-box { border-radius: 24px 24px 0 0; max-height: 96vh; } }
+
+  /* ---------- توست ---------- */
+  .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px); z-index: 300; background: var(--coffee-dark); color: #fff; padding: 12px 20px; border-radius: 30px; font-weight: 800; font-size: 14px; opacity: 0; transition: all .25s ease; pointer-events: none; box-shadow: 0 10px 30px rgba(0,0,0,.3); max-width: 92vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.err { background: var(--danger); } .toast.ok { background: var(--ok); }
+
+  .loading { text-align: center; padding: 40px; color: var(--muted); font-weight: 800; }
+  .spin { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- ===== شاشة: لسه Supabase متربطش ولا فيه وضع تجريبي ===== -->
+<div class="screen" id="viewLogin" hidden>
+  <div class="auth-card">
+    <img src="shiko-logo.png" alt="" class="logo" id="loginLogo">
+    <h1>لوحة التحكم</h1>
+    <p class="sub">سجّل دخولك عشان تعدّل المنيو والأسعار والصور</p>
+    <form id="loginForm" autocomplete="on">
+      <div class="field">
+        <label for="loginEmail">الإيميل</label>
+        <input class="input" id="loginEmail" type="email" dir="ltr" required autocomplete="username" placeholder="name@example.com">
+      </div>
+      <div class="field">
+        <label for="loginPass">كلمة السر</label>
+        <input class="input" id="loginPass" type="password" dir="ltr" required autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <div class="msg" id="loginMsg" role="alert"></div>
+      <button class="btn btn-primary btn-block" id="loginBtn" type="submit">دخول</button>
+      <div style="text-align:center; margin-top:12px">
+        <button type="button" class="link-btn" id="forgotBtn">نسيت كلمة السر؟</button>
+      </div>
+    </form>
+    <div class="demo-note" id="demoNote" hidden>
+      🧪 <strong>وضع تجريبي</strong> — Supabase لسه متربطش في <code>config.js</code>.<br>
+      تقدر تجرّب اللوحة دلوقتي بـ: <code>demo@shiko.com</code> / <code>demo1234</code><br>
+      <span style="color:var(--muted)">التعديلات هتتحفظ في المتصفح ده بس، مش على الموقع الحقيقي.</span>
+    </div>
+    <div style="margin-top:16px"><a href="./" style="font-size:13px; font-weight:800">← الرجوع للموقع</a></div>
+  </div>
+</div>
+
+<!-- ===== شاشة: كلمة سر جديدة (بعد لينك الاستعادة) ===== -->
+<div class="screen" id="viewRecovery" hidden>
+  <div class="auth-card">
+    <img src="shiko-logo.png" alt="" class="logo">
+    <h1>كلمة سر جديدة</h1>
+    <p class="sub">اكتب كلمة السر الجديدة اللي هتدخل بيها من دلوقتي</p>
+    <form id="recoveryForm">
+      <div class="field">
+        <label for="recPass">كلمة السر الجديدة</label>
+        <input class="input" id="recPass" type="password" dir="ltr" minlength="6" required autocomplete="new-password">
+      </div>
+      <div class="field">
+        <label for="recPass2">تأكيد كلمة السر</label>
+        <input class="input" id="recPass2" type="password" dir="ltr" minlength="6" required autocomplete="new-password">
+      </div>
+      <div class="msg" id="recMsg" role="alert"></div>
+      <button class="btn btn-primary btn-block" id="recBtn" type="submit">حفظ كلمة السر</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== اللوحة ===== -->
+<div id="viewApp" hidden>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <img src="shiko-logo.png" alt="" id="topLogo">
+      <div class="title">لوحة تحكم <span id="topShopName">قهوة شيكو</span><small id="topUser"></small></div>
+      <div class="spacer"></div>
+      <div class="actions">
+        <a class="btn btn-ghost btn-sm" href="./" target="_blank" rel="noopener">👀 عرض الموقع</a>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn" type="button">تسجيل خروج</button>
+      </div>
+    </div>
+  </header>
+  <div class="demo-banner" id="demoBanner" hidden>🧪 وضع تجريبي — التعديلات بتتحفظ في المتصفح ده بس. اربط Supabase من config.js عشان تتحفظ على الموقع.</div>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="menu" type="button">🍽️ المنيو</button>
+    <button class="tab" data-tab="cats" type="button">📂 الأقسام</button>
+    <button class="tab" data-tab="settings" type="button">🏪 بيانات المحل</button>
+    <button class="tab" data-tab="password" type="button">🔐 كلمة السر</button>
+  </nav>
+
+  <main>
+    <!-- المنيو -->
+    <section id="tab-menu">
+      <div class="card">
+        <h2>الأصناف والأسعار</h2>
+        <p class="sub">اختار القسم، وبعدين عدّل أو أضف أو احذف. أي تغيير بيظهر على الموقع فورًا.</p>
+        <div class="toolbar">
+          <input class="input grow" id="searchBox" type="search" placeholder="🔍 ابحث عن صنف بالاسم…">
+          <button class="btn btn-primary" id="btnAddItem" type="button">＋ إضافة صنف</button>
+        </div>
+        <div class="cat-chips" id="catChips"></div>
+        <div id="itemList"></div>
+      </div>
+    </section>
+
+    <!-- الأقسام -->
+    <section id="tab-cats" hidden>
+      <div class="card">
+        <h2>أقسام المنيو</h2>
+        <p class="sub">رتّب الأقسام زي ما تحب. لو خفيت قسم، مش هيظهر على الموقع بس أصنافه محفوظة.</p>
+        <div class="toolbar"><button class="btn btn-primary" id="btnAddCat" type="button">＋ إضافة قسم</button></div>
+        <div id="catList"></div>
+      </div>
+    </section>
+
+    <!-- بيانات المحل -->
+    <section id="tab-settings" hidden>
+      <div class="card">
+        <h2>بيانات المحل</h2>
+        <p class="sub">البيانات دي بتظهر في أعلى الموقع وفي الفوتر.</p>
+        <form id="settingsForm">
+          <div class="field">
+            <label>اللوجو</label>
+            <div class="img-picker">
+              <div class="preview logo" id="logoPreview"><img src="shiko-logo.png" alt=""></div>
+              <div class="col">
+                <label class="btn btn-sm" for="logoFile">📷 تغيير اللوجو<input type="file" id="logoFile" accept="image/*"></label>
+                <button class="btn btn-sm btn-danger" type="button" id="logoReset">↩️ الرجوع للوجو الأصلي</button>
+                <span class="hint">يفضّل صورة مربعة بخلفية بيضا أو شفافة</span>
+              </div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label for="s_shop_name">اسم المحل</label><input class="input" id="s_shop_name" required></div>
+            <div class="field"><label for="s_tagline">الجملة تحت الاسم</label><input class="input" id="s_tagline" placeholder="قهوتك على أصولها ☕"></div>
+          </div>
+          <div class="field"><label for="s_address">العنوان</label><input class="input" id="s_address"></div>
+          <div class="grid2">
+            <div class="field">
+              <label for="s_whatsapp">رقم الواتساب</label>
+              <input class="input" id="s_whatsapp" dir="ltr" inputmode="numeric" placeholder="201012345678">
+              <span class="hint">بالصيغة الدولية من غير + (مثال: 2010xxxxxxxx)</span>
+            </div>
+            <div class="field">
+              <label for="s_maps_url">لينك خرائط جوجل</label>
+              <input class="input" id="s_maps_url" dir="ltr" type="url" placeholder="https://maps.google.com/...">
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label for="s_instagram1">إنستجرام (١)</label><input class="input" id="s_instagram1" dir="ltr" placeholder="username"></div>
+            <div class="field"><label for="s_instagram2">إنستجرام (٢) — اختياري</label><input class="input" id="s_instagram2" dir="ltr" placeholder="username"></div>
+          </div>
+          <div class="modal-actions"><button class="btn btn-primary" type="submit" id="settingsSave">💾 حفظ البيانات</button></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- كلمة السر -->
+    <section id="tab-password" hidden>
+      <div class="card" style="max-width:520px">
+        <h2>تغيير كلمة السر</h2>
+        <p class="sub">كلمة السر لازم تكون ٦ حروف أو أرقام على الأقل.</p>
+        <form id="passwordForm">
+          <div class="field"><label for="p_new">كلمة السر الجديدة</label><input class="input" id="p_new" type="password" dir="ltr" minlength="6" required autocomplete="new-password"></div>
+          <div class="field"><label for="p_new2">تأكيد كلمة السر</label><input class="input" id="p_new2" type="password" dir="ltr" minlength="6" required autocomplete="new-password"></div>
+          <div class="modal-actions"><button class="btn btn-primary" type="submit" id="passwordSave">🔐 تغيير كلمة السر</button></div>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ===== مودال: صنف ===== -->
+<div class="modal" id="itemModal" hidden>
+  <div class="modal-box">
+    <h3 id="itemModalTitle">إضافة صنف</h3>
+    <form id="itemForm">
+      <input type="hidden" id="f_id">
+      <div class="grid2">
+        <div class="field"><label for="f_name">اسم الصنف (عربي)</label><input class="input" id="f_name" required maxlength="80" placeholder="مثال: كابتشينو"></div>
+        <div class="field"><label for="f_desc">الاسم بالإنجليزي / وصف قصير</label><input class="input" id="f_desc" dir="ltr" maxlength="120" placeholder="CAPPUCCINO"></div>
+      </div>
+      <div class="field"><label for="f_cat">القسم</label><select class="input" id="f_cat" required></select></div>
+
+      <div class="field">
+        <label>نوع السعر</label>
+        <div class="radio-row">
+          <label class="radio-pill"><input type="radio" name="ptype" value="single" checked><span>سعر واحد</span></label>
+          <label class="radio-pill"><input type="radio" name="ptype" value="sizes"><span>أحجام (S / M / L)</span></label>
+        </div>
+      </div>
+      <div id="priceSingle">
+        <div class="field"><label for="f_price">السعر (جنيه)</label><input class="input" id="f_price" type="number" inputmode="decimal" min="0" step="0.5" dir="ltr" placeholder="0"></div>
+      </div>
+      <div id="priceSizes" hidden>
+        <div class="grid3">
+          <div class="field"><label for="f_ps">S</label><input class="input" id="f_ps" type="number" inputmode="decimal" min="0" step="0.5" dir="ltr" placeholder="—"></div>
+          <div class="field"><label for="f_pm">M</label><input class="input" id="f_pm" type="number" inputmode="decimal" min="0" step="0.5" dir="ltr" placeholder="—"></div>
+          <div class="field"><label for="f_pl">L</label><input class="input" id="f_pl" type="number" inputmode="decimal" min="0" step="0.5" dir="ltr" placeholder="—"></div>
+        </div>
+        <span class="hint" style="display:block; margin-top:-6px; margin-bottom:12px">سيب الحجم اللي مش متوفر فاضي وهيظهر مكانه شرطة (—)</span>
+      </div>
+
+      <div class="field">
+        <label>صورة الصنف (اختياري)</label>
+        <div class="img-picker">
+          <div class="preview" id="itemImgPreview">🍽️</div>
+          <div class="col">
+            <label class="btn btn-sm" for="f_img">📷 اختيار صورة<input type="file" id="f_img" accept="image/*"></label>
+            <button class="btn btn-sm btn-danger" type="button" id="f_img_remove" hidden>🗑️ إزالة الصورة</button>
+            <span class="hint">بيتم تصغير الصورة تلقائيًا عشان الموقع يفضل سريع</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="check"><input type="checkbox" id="f_avail" checked> متاح ويظهر في المنيو</label>
+      </div>
+
+      <div class="msg err" id="itemMsg"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="submit" id="itemSave">💾 حفظ</button>
+        <button class="btn" type="button" data-close>إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== مودال: قسم ===== -->
+<div class="modal" id="catModal" hidden>
+  <div class="modal-box">
+    <h3 id="catModalTitle">إضافة قسم</h3>
+    <form id="catForm">
+      <input type="hidden" id="c_id">
+      <div class="grid2">
+        <div class="field"><label for="c_name">اسم القسم</label><input class="input" id="c_name" required maxlength="60" placeholder="مثال: مشروبات ساخنة"></div>
+        <div class="field"><label for="c_icon">الأيقونة (إيموجي)</label><input class="input" id="c_icon" maxlength="8" placeholder="☕"></div>
+      </div>
+      <div class="field"><label class="check"><input type="checkbox" id="c_active" checked> ظاهر على الموقع</label></div>
+      <div class="msg err" id="catMsg"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="submit" id="catSave">💾 حفظ</button>
+        <button class="btn" type="button" data-close>إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script src="menu-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+  'use strict';
+
+  /* =====================================================================
+     إعدادات عامة
+     ===================================================================== */
+  const CFG = window.SHIKO_CONFIG || {};
+  const BUCKET = 'menu-images';
+  const DEMO_KEY = 'shiko_demo_data_v1';
+  const CACHE_KEY = 'shiko_menu_cache_v1';
+  const DEFAULT_LOGO = 'shiko-logo.png';
+
+  const isConfigured = () =>
+    typeof CFG.SUPABASE_URL === 'string' && CFG.SUPABASE_URL.startsWith('https://') &&
+    typeof CFG.SUPABASE_KEY === 'string' && CFG.SUPABASE_KEY.length > 20 &&
+    !CFG.SUPABASE_URL.includes('PASTE_') && !CFG.SUPABASE_KEY.includes('PASTE_');
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const fmt = (v) => (v === null || v === undefined || v === '') ? '—' : String(+v);
+  const hasSizes = (it) => it.price_s != null || it.price_m != null || it.price_l != null;
+  const numOrNull = (v) => { v = String(v ?? '').trim(); if (v === '') return null; const n = Number(v); return Number.isFinite(n) ? n : null; };
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16); }));
+  const bySort = (a, b) => (a.sort_order - b.sort_order) || String(a.name).localeCompare(String(b.name), 'ar');
+
+  /* ---------- رسائل ---------- */
+  let toastTimer;
+  function toast(text, type = 'ok') {
+    const t = $('toast');
+    t.textContent = text; t.className = 'toast show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.className = 'toast'; }, 2800);
+  }
+  function friendlyError(e) {
+    const m = String((e && (e.message || e.error_description || e.msg)) || e || '');
+    if (/invalid login credentials|invalid_credentials/i.test(m)) return 'الإيميل أو كلمة السر غلط';
+    if (/email not confirmed/i.test(m)) return 'الإيميل لسه متأكدش — فعّل "Auto Confirm" للمستخدم من لوحة Supabase';
+    if (/row-level security|permission denied|42501/i.test(m)) return 'مفيش صلاحية للتعديل — تأكد إن الإيميل ده مضاف في جدول admins (شوف supabase/setup.sql)';
+    if (/could not find the function|is_admin/i.test(m)) return 'قاعدة البيانات لسه متجهزتش — شغّل ملف supabase/setup.sql في SQL Editor الأول';
+    if (/relation .* does not exist|schema cache/i.test(m)) return 'الجداول مش موجودة — شغّل ملف supabase/setup.sql في SQL Editor';
+    if (/rate limit|too many requests/i.test(m)) return 'محاولات كتير — استنى دقيقة وجرّب تاني';
+    if (/password should be at least|weak password/i.test(m)) return 'كلمة السر ضعيفة — لازم ٦ حروف على الأقل';
+    if (/same password|different from the old/i.test(m)) return 'كلمة السر الجديدة لازم تكون مختلفة عن القديمة';
+    if (/failed to fetch|networkerror|load failed/i.test(m)) return 'مفيش اتصال بالإنترنت أو الرابط في config.js غلط';
+    if (/payload too large|exceeded the maximum allowed size/i.test(m)) return 'الصورة كبيرة جدًا';
+    if (/bucket not found/i.test(m)) return 'مخزن الصور مش موجود — شغّل ملف supabase/setup.sql';
+    if (/mime type .* is not supported/i.test(m)) return 'نوع الصورة مش مدعوم — استخدم JPG أو PNG أو WebP';
+    return m || 'حصل خطأ غير متوقع';
+  }
+  async function busy(btn, label, fn) {
+    const old = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<span class="spin"></span> ${label}`;
+    try { return await fn(); } finally { btn.disabled = false; btn.innerHTML = old; }
+  }
+
+  /* =====================================================================
+     ضغط الصور قبل الرفع
+     ===================================================================== */
+  function loadImage(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('المتصفح مش قادر يقرأ الصورة دي — جرّب JPG أو PNG')); };
+      img.src = url;
+    });
+  }
+  async function compressImage(file, { max = 1000, quality = 0.82, keepAlpha = false } = {}) {
+    const img = await loadImage(file);
+    const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+    const scale = Math.min(1, max / Math.max(w, h));
+    const cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
+    const canvas = document.createElement('canvas'); canvas.width = cw; canvas.height = ch;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, cw, ch);
+    const toBlob = (type, q) => new Promise((r) => canvas.toBlob(r, type, q));
+    let blob = await toBlob('image/webp', quality);
+    if (!blob || blob.type !== 'image/webp') {
+      if (keepAlpha) { blob = await toBlob('image/png'); }
+      else { ctx.globalCompositeOperation = 'destination-over'; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cw, ch); blob = await toBlob('image/jpeg', quality); }
+    }
+    if (!blob) throw new Error('فشل تجهيز الصورة');
+    return blob;
+  }
+  const extOf = (blob) => ({ 'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png' }[blob.type] || 'jpg');
+  const blobToDataURL = (blob) => new Promise((r) => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(blob); });
+
+  /* =====================================================================
+     طبقة البيانات (1): Supabase
+     ===================================================================== */
+  function supabaseBackend(sb) {
+    const table = (t) => sb.from(t);
+    const check = ({ data, error }) => { if (error) throw error; return data; };
+    return {
+      demo: false,
+      onAuthChange: (cb) => sb.auth.onAuthStateChange((event, session) => setTimeout(() => cb(event, session), 0)),
+      getSession: async () => (await sb.auth.getSession()).data.session,
+      signIn: async (email, password) => check(await sb.auth.signInWithPassword({ email, password })).session,
+      signOut: () => sb.auth.signOut(),
+      isAdmin: async () => check(await sb.rpc('is_admin')) === true,
+      updatePassword: async (password) => check(await sb.auth.updateUser({ password })),
+      resetPassword: async (email) => check(await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname })),
+
+      loadAll: async () => {
+        const [c, i, s] = await Promise.all([
+          table('categories').select('*').order('sort_order'),
+          table('items').select('*').order('sort_order'),
+          table('settings').select('*').eq('id', 1).maybeSingle(),
+        ]);
+        return { categories: check(c) || [], items: check(i) || [], settings: check(s) || {} };
+      },
+      insertCategory: async (c) => check(await table('categories').insert(c).select().single()),
+      updateCategory: async (id, patch) => check(await table('categories').update(patch).eq('id', id)),
+      deleteCategory: async (id) => check(await table('categories').delete().eq('id', id)),
+      insertItem: async (i) => check(await table('items').insert(i).select().single()),
+      updateItem: async (id, patch) => check(await table('items').update(patch).eq('id', id)),
+      deleteItem: async (id) => check(await table('items').delete().eq('id', id)),
+      saveSettings: async (s) => check(await table('settings').upsert({ id: 1, ...s, updated_at: new Date().toISOString() })),
+
+      uploadImage: async (blob, folder) => {
+        const path = `${folder}/${uid()}.${extOf(blob)}`;
+        check(await sb.storage.from(BUCKET).upload(path, blob, { contentType: blob.type, cacheControl: '31536000', upsert: false }));
+        return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+      },
+      deleteImage: async (url) => {
+        if (!url) return;
+        const m = String(url).match(new RegExp(`/${BUCKET}/(.+)$`));
+        if (!m) return;   // صورة خارجية مش من المخزن بتاعنا
+        try { await sb.storage.from(BUCKET).remove([decodeURIComponent(m[1])]); } catch (e) { console.warn('لم يتم حذف الصورة القديمة', e); }
+      },
+    };
+  }
+
+  /* =====================================================================
+     طبقة البيانات (2): وضع تجريبي (localStorage) — قبل ربط Supabase
+     ===================================================================== */
+  function demoBackend() {
+    const SESSION_KEY = 'shiko_demo_session';
+    const read = () => { try { return JSON.parse(localStorage.getItem(DEMO_KEY) || 'null'); } catch { return null; } };
+    const seed = () => JSON.parse(JSON.stringify(window.SHIKO_SEED || { settings: {}, categories: [], items: [] }));
+    let data = read() || seed();
+    const save = () => localStorage.setItem(DEMO_KEY, JSON.stringify(data));
+    const delay = (v) => new Promise((r) => setTimeout(() => r(v), 120));
+    return {
+      demo: true,
+      onAuthChange: () => {},
+      getSession: async () => (localStorage.getItem(SESSION_KEY) ? { user: { email: 'demo@shiko.com' } } : null),
+      signIn: async (email, password) => {
+        await delay();
+        if (email.trim().toLowerCase() !== 'demo@shiko.com' || password !== 'demo1234') throw new Error('Invalid login credentials');
+        localStorage.setItem(SESSION_KEY, '1');
+        return { user: { email } };
+      },
+      signOut: async () => localStorage.removeItem(SESSION_KEY),
+      isAdmin: async () => true,
+      updatePassword: async () => delay(),
+      resetPassword: async () => delay(),
+      loadAll: async () => delay(JSON.parse(JSON.stringify(data))),
+      insertCategory: async (c) => { const row = { id: uid(), created_at: new Date().toISOString(), ...c }; data.categories.push(row); save(); return delay(row); },
+      updateCategory: async (id, patch) => { Object.assign(data.categories.find((x) => x.id === id) || {}, patch); save(); return delay(); },
+      deleteCategory: async (id) => { data.categories = data.categories.filter((x) => x.id !== id); data.items = data.items.filter((x) => x.category_id !== id); save(); return delay(); },
+      insertItem: async (i) => { const row = { id: uid(), created_at: new Date().toISOString(), ...i }; data.items.push(row); save(); return delay(row); },
+      updateItem: async (id, patch) => { Object.assign(data.items.find((x) => x.id === id) || {}, patch); save(); return delay(); },
+      deleteItem: async (id) => { data.items = data.items.filter((x) => x.id !== id); save(); return delay(); },
+      saveSettings: async (s) => { data.settings = { ...(data.settings || {}), id: 1, ...s }; save(); return delay(); },
+      uploadImage: async (blob) => blobToDataURL(blob),
+      deleteImage: async () => {},
+    };
+  }
+
+  /* =====================================================================
+     حالة التطبيق
+     ===================================================================== */
+  let api = null;
+  const state = { user: null, categories: [], items: [], settings: {}, catId: null, tab: 'menu', search: '' };
+  const pending = { itemBlob: null, itemThumb: null, itemRemove: false, logoBlob: null, logoReset: false };
+
+  const show = (id) => { ['viewLogin', 'viewRecovery', 'viewApp'].forEach((v) => { $(v).hidden = v !== id; }); };
+
+  async function refresh() {
+    const d = await api.loadAll();
+    state.categories = (d.categories || []).slice().sort(bySort);
+    state.items = (d.items || []).slice().sort(bySort);
+    state.settings = d.settings || {};
+    if (!state.catId || !state.categories.some((c) => c.id === state.catId)) state.catId = state.categories[0]?.id || null;
+    if (!api.demo) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); } catch {} }
+    renderAll();
+  }
+
+  function renderAll() { renderHeader(); renderCatChips(); renderItems(); renderCats(); fillSettingsForm(); }
+
+  function renderHeader() {
+    const s = state.settings || {};
+    $('topShopName').textContent = s.shop_name || 'قهوة شيكو';
+    $('topLogo').src = s.logo_url || DEFAULT_LOGO;
+    $('topUser').textContent = state.user?.email || '';
+  }
+
+  /* ---------- المنيو ---------- */
+  function renderCatChips() {
+    const counts = {};
+    state.items.forEach((i) => { counts[i.category_id] = (counts[i.category_id] || 0) + 1; });
+    $('catChips').innerHTML = state.categories.map((c) =>
+      `<button type="button" class="cchip${c.id === state.catId ? ' active' : ''}" data-cat="${c.id}">${esc(c.icon)} ${esc(c.name)} <span class="n">(${counts[c.id] || 0})</span>${c.is_active === false ? ' 🙈' : ''}</button>`).join('');
+    $('catChips').hidden = !!state.search;
+  }
+
+  function priceBadges(it) {
+    if (hasSizes(it)) {
+      const parts = [['S', it.price_s], ['M', it.price_m], ['L', it.price_l]].filter(([, p]) => p != null);
+      return parts.map(([l, p]) => `<span class="badge">${fmt(p)}<small>${l}</small></span>`).join('');
+    }
+    return `<span class="badge">${fmt(it.price)} <small>ج</small></span>`;
+  }
+
+  function renderItems() {
+    const q = state.search.trim().toLowerCase();
+    let list;
+    if (q) list = state.items.filter((i) => (i.name + ' ' + (i.description || '')).toLowerCase().includes(q));
+    else list = state.items.filter((i) => i.category_id === state.catId);
+
+    if (!state.categories.length) {
+      $('itemList').innerHTML = `<div class="empty"><strong>مفيش أقسام لسه</strong>ابدأ بإضافة قسم من تبويب "الأقسام"</div>`;
+      return;
+    }
+    if (!list.length) {
+      $('itemList').innerHTML = q
+        ? `<div class="empty">مفيش صنف بالاسم ده</div>`
+        : `<div class="empty"><strong>القسم ده فاضي</strong>اضغط "إضافة صنف" عشان تضيف أول صنف</div>`;
+      return;
+    }
+    const catName = (id) => { const c = state.categories.find((x) => x.id === id); return c ? `${c.icon} ${c.name}` : ''; };
+    $('itemList').innerHTML = list.map((it, idx) => `
+      <div class="row${it.is_available === false ? ' off' : ''}" data-id="${it.id}">
+        ${it.image_url ? `<img class="thumb" src="${esc(it.thumb_url || it.image_url)}" alt="" loading="lazy">` : `<div class="thumb thumb-empty">🍽️</div>`}
+        <div class="info">
+          <div class="name">${esc(it.name)}${q ? `<span class="cat-tag">${esc(catName(it.category_id))}</span>` : ''}</div>
+          ${it.description ? `<div class="desc">${esc(it.description)}</div>` : ''}
+        </div>
+        <div class="prices">${priceBadges(it)}</div>
+        <div class="acts">
+          <label class="switch" title="إظهار / إخفاء من المنيو">
+            <input type="checkbox" data-act="toggle" ${it.is_available !== false ? 'checked' : ''}><span class="track"></span><span class="sw-text">${it.is_available !== false ? 'ظاهر' : 'مخفي'}</span>
+          </label>
+          <div class="group">
+            ${q ? '' : `<button class="btn btn-icon" type="button" data-act="up" title="تحريك لأعلى" ${idx === 0 ? 'disabled' : ''}>⬆️</button>
+            <button class="btn btn-icon" type="button" data-act="down" title="تحريك لأسفل" ${idx === list.length - 1 ? 'disabled' : ''}>⬇️</button>`}
+            <button class="btn btn-icon" type="button" data-act="edit" title="تعديل">✏️</button>
+            <button class="btn btn-icon btn-danger" type="button" data-act="del" title="حذف">🗑️</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  async function reorder(list, fromIdx, toIdx, update) {
+    const arr = list.slice();
+    const [moved] = arr.splice(fromIdx, 1);
+    arr.splice(toIdx, 0, moved);
+    const ops = [];
+    arr.forEach((row, i) => { if (row.sort_order !== i + 1) ops.push(update(row.id, { sort_order: i + 1 })); });
+    await Promise.all(ops);
+  }
+
+  $('itemList').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn || btn.tagName === 'INPUT') return;
+    const row = btn.closest('.row'); const id = row.dataset.id;
+    const it = state.items.find((x) => x.id === id); if (!it) return;
+    const act = btn.dataset.act;
+    try {
+      if (act === 'edit') openItemModal(it);
+      else if (act === 'del') {
+        if (!confirm(`متأكد إنك عايز تحذف "${it.name}"؟`)) return;
+        await api.deleteItem(id); await Promise.all([api.deleteImage(it.image_url), api.deleteImage(it.thumb_url)]);
+        toast('تم حذف الصنف 🗑️'); await refresh();
+      } else if (act === 'up' || act === 'down') {
+        const list = state.items.filter((i) => i.category_id === it.category_id);
+        const idx = list.findIndex((i) => i.id === id);
+        const to = act === 'up' ? idx - 1 : idx + 1;
+        if (to < 0 || to >= list.length) return;
+        await reorder(list, idx, to, api.updateItem); await refresh();
+      }
+    } catch (err) { toast(friendlyError(err), 'err'); }
+  });
+  $('itemList').addEventListener('change', async (e) => {
+    const inp = e.target.closest('input[data-act="toggle"]'); if (!inp) return;
+    const id = inp.closest('.row').dataset.id;
+    try { await api.updateItem(id, { is_available: inp.checked }); toast(inp.checked ? 'الصنف ظاهر دلوقتي ✅' : 'تم إخفاء الصنف 🙈'); await refresh(); }
+    catch (err) { toast(friendlyError(err), 'err'); inp.checked = !inp.checked; }
+  });
+  $('catChips').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-cat]'); if (!b) return;
+    state.catId = b.dataset.cat; renderCatChips(); renderItems();
+  });
+  $('searchBox').addEventListener('input', (e) => { state.search = e.target.value; renderCatChips(); renderItems(); });
+
+  /* ---------- مودال الصنف ---------- */
+  function setPreview(el, url, emptyIcon) {
+    el.innerHTML = url ? `<img src="${esc(url)}" alt="">` : emptyIcon;
+  }
+  function openItemModal(it) {
+    const editing = !!it;
+    $('itemModalTitle').textContent = editing ? 'تعديل صنف' : 'إضافة صنف';
+    $('f_id').value = it?.id || '';
+    $('f_name').value = it?.name || '';
+    $('f_desc').value = it?.description || '';
+    $('f_cat').innerHTML = state.categories.map((c) => `<option value="${c.id}">${esc(c.icon)} ${esc(c.name)}</option>`).join('');
+    $('f_cat').value = it?.category_id || state.catId || (state.categories[0]?.id ?? '');
+    const sizes = it ? hasSizes(it) : false;
+    document.querySelector(`input[name="ptype"][value="${sizes ? 'sizes' : 'single'}"]`).checked = true;
+    $('f_price').value = it?.price ?? '';
+    $('f_ps').value = it?.price_s ?? ''; $('f_pm').value = it?.price_m ?? ''; $('f_pl').value = it?.price_l ?? '';
+    $('f_avail').checked = it ? it.is_available !== false : true;
+    pending.itemBlob = null; pending.itemThumb = null; pending.itemRemove = false;
+    $('f_img').value = '';
+    setPreview($('itemImgPreview'), it?.thumb_url || it?.image_url || '', '🍽️');
+    $('f_img_remove').hidden = !it?.image_url;
+    $('itemMsg').textContent = '';
+    togglePriceType();
+    $('itemModal').hidden = false;
+    setTimeout(() => $('f_name').focus(), 50);
+  }
+  function togglePriceType() {
+    const sizes = document.querySelector('input[name="ptype"]:checked').value === 'sizes';
+    $('priceSingle').hidden = sizes; $('priceSizes').hidden = !sizes;
+  }
+  document.querySelectorAll('input[name="ptype"]').forEach((r) => r.addEventListener('change', togglePriceType));
+  $('btnAddItem').addEventListener('click', () => {
+    if (!state.categories.length) { toast('ضيف قسم الأول من تبويب "الأقسام"', 'err'); return; }
+    openItemModal(null);
+  });
+  $('f_img').addEventListener('change', async (e) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    try {
+      const [blob, thumb] = await Promise.all([
+        compressImage(file, { max: 1000, quality: 0.82 }),   // الصورة الكبيرة (بتتفتح لما الزبون يدوس عليها)
+        compressImage(file, { max: 240, quality: 0.8 }),     // صورة صغيرة للقائمة عشان الموقع يفضل خفيف
+      ]);
+      pending.itemBlob = blob; pending.itemThumb = thumb; pending.itemRemove = false;
+      setPreview($('itemImgPreview'), URL.createObjectURL(blob), '🍽️');
+      $('f_img_remove').hidden = false;
+    } catch (err) { toast(friendlyError(err), 'err'); }
+  });
+  $('f_img_remove').addEventListener('click', () => {
+    pending.itemBlob = null; pending.itemThumb = null; pending.itemRemove = true; $('f_img').value = '';
+    setPreview($('itemImgPreview'), '', '🍽️'); $('f_img_remove').hidden = true;
+  });
+  $('itemForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = $('f_id').value || null;
+    const old = id ? state.items.find((x) => x.id === id) : null;
+    const sizes = document.querySelector('input[name="ptype"]:checked').value === 'sizes';
+    const rec = {
+      name: $('f_name').value.trim(),
+      description: $('f_desc').value.trim(),
+      category_id: $('f_cat').value,
+      price: sizes ? null : numOrNull($('f_price').value),
+      price_s: sizes ? numOrNull($('f_ps').value) : null,
+      price_m: sizes ? numOrNull($('f_pm').value) : null,
+      price_l: sizes ? numOrNull($('f_pl').value) : null,
+      is_available: $('f_avail').checked,
+    };
+    if (!rec.name) { $('itemMsg').textContent = 'اكتب اسم الصنف'; return; }
+    if (!rec.category_id) { $('itemMsg').textContent = 'اختار القسم'; return; }
+    if (sizes && rec.price_s == null && rec.price_m == null && rec.price_l == null) { $('itemMsg').textContent = 'اكتب سعر لحجم واحد على الأقل'; return; }
+    if (!sizes && rec.price == null) { $('itemMsg').textContent = 'اكتب السعر'; return; }
+
+    await busy($('itemSave'), 'جاري الحفظ…', async () => {
+      try {
+        const oldImages = [];
+        if (pending.itemBlob) {
+          [rec.image_url, rec.thumb_url] = await Promise.all([
+            api.uploadImage(pending.itemBlob, 'items'),
+            api.uploadImage(pending.itemThumb || pending.itemBlob, 'thumbs'),
+          ]);
+          oldImages.push(old?.image_url, old?.thumb_url);
+        } else if (pending.itemRemove) {
+          rec.image_url = null; rec.thumb_url = null;
+          oldImages.push(old?.image_url, old?.thumb_url);
+        }
+        if (id) {
+          await api.updateItem(id, rec);
+        } else {
+          const siblings = state.items.filter((i) => i.category_id === rec.category_id);
+          rec.sort_order = siblings.reduce((m, i) => Math.max(m, i.sort_order || 0), 0) + 1;
+          rec.image_url = rec.image_url || null; rec.thumb_url = rec.thumb_url || null;
+          await api.insertItem(rec);
+        }
+        await Promise.all(oldImages.filter((u) => u && u !== rec.image_url && u !== rec.thumb_url).map((u) => api.deleteImage(u)));
+        state.catId = rec.category_id;
+        $('itemModal').hidden = true;
+        toast(id ? 'تم حفظ التعديلات ✅' : 'تمت إضافة الصنف ✅');
+        await refresh();
+      } catch (err) { $('itemMsg').textContent = friendlyError(err); }
+    });
+  });
+
+  /* ---------- الأقسام ---------- */
+  function renderCats() {
+    const counts = {};
+    state.items.forEach((i) => { counts[i.category_id] = (counts[i.category_id] || 0) + 1; });
+    if (!state.categories.length) { $('catList').innerHTML = `<div class="empty"><strong>مفيش أقسام</strong>اضغط "إضافة قسم"</div>`; return; }
+    $('catList').innerHTML = state.categories.map((c, idx) => `
+      <div class="row cat-row${c.is_active === false ? ' off' : ''}" data-id="${c.id}">
+        <div class="icon">${esc(c.icon) || '📂'}</div>
+        <div class="info"><div class="name">${esc(c.name)}</div><div class="desc">${counts[c.id] || 0} صنف</div></div>
+        <div class="acts">
+          <label class="switch" title="إظهار / إخفاء القسم">
+            <input type="checkbox" data-act="toggle" ${c.is_active !== false ? 'checked' : ''}><span class="track"></span><span class="sw-text">${c.is_active !== false ? 'ظاهر' : 'مخفي'}</span>
+          </label>
+          <div class="group">
+            <button class="btn btn-icon" type="button" data-act="up" ${idx === 0 ? 'disabled' : ''}>⬆️</button>
+            <button class="btn btn-icon" type="button" data-act="down" ${idx === state.categories.length - 1 ? 'disabled' : ''}>⬇️</button>
+            <button class="btn btn-icon" type="button" data-act="edit" title="تعديل">✏️</button>
+            <button class="btn btn-icon btn-danger" type="button" data-act="del" title="حذف">🗑️</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+  function openCatModal(c) {
+    $('catModalTitle').textContent = c ? 'تعديل قسم' : 'إضافة قسم';
+    $('c_id').value = c?.id || ''; $('c_name').value = c?.name || ''; $('c_icon').value = c?.icon || '';
+    $('c_active').checked = c ? c.is_active !== false : true;
+    $('catMsg').textContent = '';
+    $('catModal').hidden = false;
+    setTimeout(() => $('c_name').focus(), 50);
+  }
+  $('btnAddCat').addEventListener('click', () => openCatModal(null));
+  $('catList').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-act]'); if (!btn || btn.tagName === 'INPUT') return;
+    const id = btn.closest('.row').dataset.id; const c = state.categories.find((x) => x.id === id); if (!c) return;
+    const act = btn.dataset.act;
+    try {
+      if (act === 'edit') openCatModal(c);
+      else if (act === 'del') {
+        const n = state.items.filter((i) => i.category_id === id).length;
+        if (!confirm(`هتحذف قسم "${c.name}"${n ? ` ومعاه ${n} صنف` : ''}. متأكد؟`)) return;
+        const imgs = state.items.filter((i) => i.category_id === id).flatMap((i) => [i.image_url, i.thumb_url]).filter(Boolean);
+        await api.deleteCategory(id);
+        await Promise.all(imgs.map((u) => api.deleteImage(u)));
+        toast('تم حذف القسم 🗑️'); await refresh();
+      } else if (act === 'up' || act === 'down') {
+        const idx = state.categories.findIndex((x) => x.id === id);
+        const to = act === 'up' ? idx - 1 : idx + 1;
+        if (to < 0 || to >= state.categories.length) return;
+        await reorder(state.categories, idx, to, api.updateCategory); await refresh();
+      }
+    } catch (err) { toast(friendlyError(err), 'err'); }
+  });
+  $('catList').addEventListener('change', async (e) => {
+    const inp = e.target.closest('input[data-act="toggle"]'); if (!inp) return;
+    const id = inp.closest('.row').dataset.id;
+    try { await api.updateCategory(id, { is_active: inp.checked }); toast(inp.checked ? 'القسم ظاهر دلوقتي ✅' : 'تم إخفاء القسم 🙈'); await refresh(); }
+    catch (err) { toast(friendlyError(err), 'err'); inp.checked = !inp.checked; }
+  });
+  $('catForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = $('c_id').value || null;
+    const rec = { name: $('c_name').value.trim(), icon: $('c_icon').value.trim(), is_active: $('c_active').checked };
+    if (!rec.name) { $('catMsg').textContent = 'اكتب اسم القسم'; return; }
+    await busy($('catSave'), 'جاري الحفظ…', async () => {
+      try {
+        if (id) await api.updateCategory(id, rec);
+        else {
+          rec.sort_order = state.categories.reduce((m, c) => Math.max(m, c.sort_order || 0), 0) + 1;
+          const created = await api.insertCategory(rec);
+          if (created?.id) state.catId = created.id;
+        }
+        $('catModal').hidden = true;
+        toast(id ? 'تم حفظ القسم ✅' : 'تمت إضافة القسم ✅');
+        await refresh();
+      } catch (err) { $('catMsg').textContent = friendlyError(err); }
+    });
+  });
+
+  /* ---------- بيانات المحل ---------- */
+  function fillSettingsForm() {
+    const s = state.settings || {};
+    ['shop_name', 'tagline', 'address', 'whatsapp', 'instagram1', 'instagram2', 'maps_url'].forEach((k) => { $('s_' + k).value = s[k] || ''; });
+    pending.logoBlob = null; pending.logoReset = false; $('logoFile').value = '';
+    setPreview($('logoPreview'), s.logo_url || DEFAULT_LOGO, '');
+    $('logoReset').hidden = !s.logo_url;
+  }
+  $('logoFile').addEventListener('change', async (e) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    try {
+      const blob = await compressImage(file, { max: 600, quality: 0.9, keepAlpha: true });
+      pending.logoBlob = blob; pending.logoReset = false;
+      setPreview($('logoPreview'), URL.createObjectURL(blob), '');
+      $('logoReset').hidden = false;
+    } catch (err) { toast(friendlyError(err), 'err'); }
+  });
+  $('logoReset').addEventListener('click', () => {
+    pending.logoBlob = null; pending.logoReset = true; $('logoFile').value = '';
+    setPreview($('logoPreview'), DEFAULT_LOGO, ''); $('logoReset').hidden = true;
+  });
+  $('settingsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const rec = {};
+    ['shop_name', 'tagline', 'address', 'whatsapp', 'instagram1', 'instagram2', 'maps_url'].forEach((k) => { rec[k] = $('s_' + k).value.trim(); });
+    rec.whatsapp = rec.whatsapp.replace(/[^\d]/g, '');
+    if (rec.whatsapp.startsWith('0')) rec.whatsapp = '2' + rec.whatsapp;   // 010xxxxxxxx → 2010xxxxxxxx
+    rec.instagram1 = rec.instagram1.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/\/$/, '');
+    rec.instagram2 = rec.instagram2.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/\/$/, '');
+    if (!rec.shop_name) { toast('اكتب اسم المحل', 'err'); return; }
+    await busy($('settingsSave'), 'جاري الحفظ…', async () => {
+      try {
+        const oldLogo = state.settings?.logo_url || null;
+        if (pending.logoBlob) rec.logo_url = await api.uploadImage(pending.logoBlob, 'logo');
+        else if (pending.logoReset) rec.logo_url = null;
+        await api.saveSettings(rec);
+        if ((pending.logoBlob || pending.logoReset) && oldLogo && oldLogo !== rec.logo_url) await api.deleteImage(oldLogo);
+        toast('تم حفظ بيانات المحل ✅');
+        await refresh();
+      } catch (err) { toast(friendlyError(err), 'err'); }
+    });
+  });
+
+  /* ---------- كلمة السر ---------- */
+  $('passwordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const a = $('p_new').value, b = $('p_new2').value;
+    if (a.length < 6) { toast('كلمة السر لازم ٦ حروف على الأقل', 'err'); return; }
+    if (a !== b) { toast('كلمتا السر مش متطابقتين', 'err'); return; }
+    await busy($('passwordSave'), 'جاري التغيير…', async () => {
+      try { await api.updatePassword(a); $('p_new').value = ''; $('p_new2').value = ''; toast('تم تغيير كلمة السر ✅'); }
+      catch (err) { toast(friendlyError(err), 'err'); }
+    });
+  });
+
+  /* ---------- تبويبات + مودال عام ---------- */
+  $('tabs').addEventListener('click', (e) => {
+    const t = e.target.closest('.tab'); if (!t) return;
+    state.tab = t.dataset.tab;
+    document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('active', x === t));
+    ['menu', 'cats', 'settings', 'password'].forEach((k) => { $('tab-' + k).hidden = k !== state.tab; });
+    window.scrollTo({ top: 0 });
+  });
+  document.querySelectorAll('.modal').forEach((m) => {
+    m.addEventListener('click', (e) => { if (e.target === m || e.target.closest('[data-close]')) m.hidden = true; });
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal').forEach((m) => { m.hidden = true; }); });
+
+  /* =====================================================================
+     تسجيل الدخول / الخروج
+     ===================================================================== */
+  async function enterApp(session) {
+    state.user = session?.user || null;
+    try {
+      const ok = await api.isAdmin();
+      if (!ok) {
+        await api.signOut();
+        show('viewLogin');
+        setMsg('loginMsg', 'الإيميل ده مش مصرح له بالدخول — ضيفه في جدول admins (شوف supabase/setup.sql)', 'err');
+        return;
+      }
+      show('viewApp');
+      $('demoBanner').hidden = !api.demo;
+      $('itemList').innerHTML = '<div class="loading">جاري تحميل المنيو…</div>';
+      await refresh();
+    } catch (err) {
+      show('viewLogin');
+      setMsg('loginMsg', friendlyError(err), 'err');
+      try { await api.signOut(); } catch {}
+    }
+  }
+  function setMsg(id, text, type) { const el = $(id); el.textContent = text; el.className = 'msg ' + (type || ''); }
+
+  $('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setMsg('loginMsg', '');
+    await busy($('loginBtn'), 'جاري الدخول…', async () => {
+      try {
+        const session = await api.signIn($('loginEmail').value.trim(), $('loginPass').value);
+        $('loginPass').value = '';
+        await enterApp(session);
+      } catch (err) { setMsg('loginMsg', friendlyError(err), 'err'); }
+    });
+  });
+  $('forgotBtn').addEventListener('click', async () => {
+    if (api.demo) { setMsg('loginMsg', 'في الوضع التجريبي: demo@shiko.com / demo1234', 'ok'); return; }
+    const email = $('loginEmail').value.trim();
+    if (!email) { setMsg('loginMsg', 'اكتب الإيميل الأول وبعدين اضغط "نسيت كلمة السر"', 'err'); return; }
+    try { await api.resetPassword(email); setMsg('loginMsg', 'بعتنالك لينك على الإيميل لتغيير كلمة السر ✉️ (بص في الـ Spam لو موصلش)', 'ok'); }
+    catch (err) { setMsg('loginMsg', friendlyError(err), 'err'); }
+  });
+  $('logoutBtn').addEventListener('click', async () => {
+    await api.signOut(); state.user = null; show('viewLogin'); setMsg('loginMsg', 'تم تسجيل الخروج', 'ok');
+  });
+  $('recoveryForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const a = $('recPass').value, b = $('recPass2').value;
+    if (a !== b) { setMsg('recMsg', 'كلمتا السر مش متطابقتين', 'err'); return; }
+    await busy($('recBtn'), 'جاري الحفظ…', async () => {
+      try {
+        await api.updatePassword(a);
+        const session = await api.getSession();
+        history.replaceState(null, '', location.pathname);
+        await enterApp(session);
+      } catch (err) { setMsg('recMsg', friendlyError(err), 'err'); }
+    });
+  });
+
+  /* =====================================================================
+     البداية
+     ===================================================================== */
+  (async function init() {
+    if (isConfigured()) {
+      if (!window.supabase?.createClient) {
+        show('viewLogin');
+        setMsg('loginMsg', 'مكتبة Supabase متحملتش — تأكد من الاتصال بالإنترنت وحدّث الصفحة', 'err');
+        $('loginBtn').disabled = true;
+        return;
+      }
+      api = supabaseBackend(window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_KEY, { auth: { flowType: 'implicit' } }));
+    } else {
+      api = demoBackend();
+      $('demoNote').hidden = false;
+      $('loginEmail').value = 'demo@shiko.com';
+    }
+
+    const seedLogo = (window.SHIKO_SEED?.settings?.logo_url) || DEFAULT_LOGO;
+    $('loginLogo').src = seedLogo;
+
+    api.onAuthChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') { show('viewRecovery'); return; }
+      if (event === 'SIGNED_OUT') { state.user = null; show('viewLogin'); }
+    });
+
+    // لينك "نسيت كلمة السر" بيرجع للصفحة دي ومعاه type=recovery في الـ hash
+    const isRecoveryLink = /type=recovery/.test(location.hash);
+    const session = await api.getSession();   // بيستنى supabase-js يقرأ التوكن من الرابط لو موجود
+
+    if (isRecoveryLink) show('viewRecovery');
+    else if (session) await enterApp(session);
+    else show('viewLogin');
+  })();
+})();
+</script>
+</body>
+</html>
